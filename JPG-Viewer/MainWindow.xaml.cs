@@ -22,51 +22,22 @@ namespace JPG_Viewer
     /// </summary>
     public partial class MainWindow : Window
     {
+        JPEGWalker walker;
         public List<string> FoundImages { get; set; }
         public List<string> FoundPaths { get; set; }
         public MainWindow()
         {
-            FolderBrowserDialog selectedFolderDialog = new FolderBrowserDialog();
-            selectedFolderDialog.ShowDialog();
-            FoundImages = FindJPEGInDirectory(selectedFolderDialog.SelectedPath);
-            FoundPaths = FindAllPathsInDirectory(selectedFolderDialog.SelectedPath);
+            walker = new JPEGWalker();
+            //FolderBrowserDialog selectedFolderDialog = new FolderBrowserDialog();
+            //selectedFolderDialog.ShowDialog();
+            //FoundImages = walker.FindJPEGInDirectory(selectedFolderDialog.SelectedPath);
+            //FoundPaths = walker.FindAllPathsInDirectory(selectedFolderDialog.SelectedPath);
             InitializeComponent();
         }
 
-        public static List<string> FindJPEGInDirectory(string dir)
+        private void ReadExifButton_Click(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(dir))
-                return null;
-            List<string> JPEGPaths = new List<string>();
-            DirectoryInfo directory = new DirectoryInfo(dir);
-            try
-            {
-                foreach (FileInfo file in directory.GetFiles("*", SearchOption.AllDirectories))
-                {
-                    if (file.Extension.Contains("jpg") ||
-                       file.Extension.Contains("jpeg"))
-                        JPEGPaths.Add(file.FullName);
-                }
-            }
-            catch (Exception ex) { System.Windows.MessageBox.Show(ex.Message); }
-            return JPEGPaths;
-
-        }
-        public static List<string> FindAllPathsInDirectory(string dir)
-        {
-            if (string.IsNullOrWhiteSpace(dir))
-                return null;
-            List<string> Dirs = new List<string>();
-            DirectoryInfo directory = new DirectoryInfo(dir);
-            try
-            {
-                foreach(var d in directory.GetDirectories("*", SearchOption.AllDirectories).ToList())
-                {
-                    Dirs.Add(d.Name);
-                }
-            }
-            catch (Exception ex) { System.Windows.MessageBox.Show(ex.Message); }
-            return Dirs;
+            DumpedJPEGTextBlock.Text = walker.ReadExifInFile("C:\\Windows.old\\Users\\Татьяна - копия\\.vscode\\extensions\\formulahendry.code-runner-0.9.10\\images\\Coding.jpg");
         }
     }
 }

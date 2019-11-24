@@ -10,8 +10,13 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="140"/>
             <ColumnDefinition/>
+            <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <TreeView x:Name="DirectoriesTreeView" Grid.Column="0" ItemsSource="{Binding FoundPaths, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"/>
-        <ListBox x:Name="FoundImagesListBox" Grid.Column="1" ItemsSource="{Binding FoundImages, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"/>
+        <StackPanel Orientation="Vertical" Grid.Column="1">
+            <ListBox x:Name="FoundImagesListBox" Grid.Column="1" ItemsSource="{Binding FoundImages, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"/>
+            <Button x:Name="ReadExifButton" Content="ClickMe" Click="ReadExifButton_Click"/>
+        </StackPanel>
+        <TextBox x:Name="DumpedJPEGTextBlock" Grid.Column="2"/>
     </Grid>
 </Window>
