@@ -53,14 +53,18 @@ namespace JPG_Viewer
             //      3. самих данных
             // Надо найти спецификацию JPEG, наименования маркеров и сделать чтение по этим маркерам
             string kindaExif = "";
-            byte[] searchedChars = new byte[2];
+            int exifMarkerIndex = 4;
+            byte[] searchedExifLength = new byte[2];
             using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read))
             {
                 using (BinaryReader reader = new BinaryReader(fs))
                 {
-                    while(reader.Read(searchedChars, 0, 2) > 1)
+                    byte swap;
+                    while(!((searchedExifLength[0] = reader.ReadByte()) == 0xFF) && !((searchedExifLength[1] = reader.ReadByte()) == 0xE1))
                     {
-                        kindaExif += Encoding.ASCII.GetString(searchedChars);
+                        swap = searchedExifLength[0];
+                        searchedExifLength[0] = searchedExifLength[1];
+                        searchedExifLength[1] = swap;
                     }
                 }
             }
