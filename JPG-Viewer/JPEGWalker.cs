@@ -73,9 +73,10 @@ namespace JPG_Viewer
                     if (fs.Position == fs.Length - 1)
                         return "Несовместимый формат";
                     ushort length = reader.ReadUInt16();
-                    length = (ushort)((length << 8) | (length >> 8) & 0xFF);
+                    length = (ushort)((length << 8) | (length >> 8) & 0xFF); // изменение порядка байтов. Любезно предоставлено переполнением стека
+                    fs.Seek(2, SeekOrigin.Current);
+                    kindaExif += Encoding.UTF7.GetString(reader.ReadBytes(length - 2));
                     MessageBox.Show(length.ToString());
-                    kindaExif = Encoding.ASCII.GetString(searchExifBuffer);
                 }
             }
             return kindaExif;

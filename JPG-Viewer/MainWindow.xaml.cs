@@ -37,7 +37,7 @@ namespace JPG_Viewer
 
         private void ReadExifButton_Click(object sender, RoutedEventArgs e)
         {
-            DumpedJPEGTextBlock.Text = walker.ReadExifInFile("C:\\Windows.old\\Users\\Татьяна - копия\\.vscode\\extensions\\formulahendry.code-runner-0.9.10\\images\\Coding.jpg");
+            DumpedJPEGTextBlock.Text = walker.ReadExifInFile("E:\\Милпградово2017\\Фото Милоградово 2017\\Лена\\IMG_6663.jpg");
         }
     }
 }
