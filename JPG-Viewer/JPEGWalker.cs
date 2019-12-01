@@ -75,7 +75,7 @@ namespace JPG_Viewer
                     ushort length = reader.ReadUInt16();
                     length = (ushort)((length << 8) | (length >> 8) & 0xFF); // изменение порядка байтов. Любезно предоставлено переполнением стека
                     fs.Seek(2, SeekOrigin.Current);
-                    kindaExif += Encoding.UTF7.GetString(reader.ReadBytes(length - 2));
+                    kindaExif += Encoding.UTF7.GetString(reader.ReadBytes(length - 2)); // надо узнать информацию о маркерах метаинфы в спецификации
                     MessageBox.Show(length.ToString());
                 }
             }
