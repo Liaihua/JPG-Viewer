@@ -20,8 +20,9 @@ namespace JPG_Viewer
             {
                 foreach (FileInfo file in directory.GetFiles("*", SearchOption.AllDirectories))
                 {
-                    if (file.Extension.Contains("jpg") ||
-                       file.Extension.Contains("jpeg"))
+                    if (file.Extension.Contains("jpg")  ||
+                        file.Extension.Contains("jpeg") || 
+                        file.Extension.Contains("jfif"))
                         JPEGPaths.Add(file.FullName);
                 }
             }
@@ -46,37 +47,47 @@ namespace JPG_Viewer
             return Dirs;
         }
 
-        public string ReadExifInFile(string path)
+        private void Swap(ref byte a, ref byte b)
+        {
+            byte temp = a;
+            a = b;
+            b = temp;
+        }
+
+        public string ReadExifInFile(string path) // Функция начинает делать слишком много. Нужно переделать
         {
             // Каждый сектор заголовка JPEG состоит из
             //      1. маркера (0xFFE1 - Exif)
             //      2. длины сектора (два байта) + 2б длина маркера
             //      3. самих данных
             // Надо найти спецификацию JPEG, наименования маркеров и сделать чтение по этим маркерам
+            // Есть вариант с чтением до маркера SOS, используя switch(mark)
             string kindaExif = "";
             byte[] searchExifBuffer = { 0x00, 0x00 };
             using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read))
             {
                 using (BinaryReader reader = new BinaryReader(fs))
                 {
-                    byte swap;
                     fs.Seek(0, SeekOrigin.Begin);                              
-                    // 0xE0 - старый JFIF, 0xE1 - более новая версия стандарта Exif
+                    // 0xE0 - старый JFIF, 0xE1 - более новая версия стандарта Exif. Есть проблемы с чтением APP0 и APP1 одновременно
                     while (!((searchExifBuffer[0] == 0xFF) && ((searchExifBuffer[1] == 0xE0) || searchExifBuffer[1] == 0xE1))
                         && fs.Position != fs.Length - 1)
                     {
-                        swap = searchExifBuffer[1];
-                        searchExifBuffer[1] = searchExifBuffer[0];
-                        searchExifBuffer[0] = swap;
+                        Swap(ref searchExifBuffer[0], ref searchExifBuffer[1]);
                         searchExifBuffer[1] = reader.ReadByte();
                     }
+                    
                     if (fs.Position == fs.Length - 1)
                         return "Несовместимый формат";
+                    
                     ushort length = reader.ReadUInt16();
-                    length = (ushort)((length << 8) | (length >> 8) & 0xFF); // изменение порядка байтов. Любезно предоставлено переполнением стека
-                    fs.Seek(2, SeekOrigin.Current);
-                    kindaExif += Encoding.UTF7.GetString(reader.ReadBytes(length - 2)); // надо узнать информацию о маркерах метаинфы в спецификации
+                    length = (ushort)((length << 8) | (length >> 8) & 0xFF); // изменение порядка байтов с little на big-endian. Любезно предоставлено переполнением стека
                     MessageBox.Show(length.ToString());
+                    
+                    length -= 2;
+                    while(length-- != 0)
+                        kindaExif += Encoding.UTF8.GetString(reader.ReadBytes(1)); // надо узнать информацию о маркерах метаинфы в спецификации
+                    
                 }
             }
             return kindaExif;

@@ -14,9 +14,25 @@
         </Grid.ColumnDefinitions>
         <TreeView x:Name="DirectoriesTreeView" Grid.Column="0" ItemsSource="{Binding FoundPaths, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"/>
         <StackPanel Orientation="Vertical" Grid.Column="1">
-            <ListBox x:Name="FoundImagesListBox" Grid.Column="1" ItemsSource="{Binding FoundImages, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"/>
+            <ListView x:Name="FoundImagesListView" Grid.Column="1" ItemsSource="{Binding FoundImages, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}">
+                <ListView.View>
+                    <GridView>
+                        <GridView.Columns>
+                            <GridViewColumn Header="Имя файла"/>
+                            <GridViewColumn Header="Блабла"/>
+                        </GridView.Columns>
+                    </GridView>
+                </ListView.View>
+            </ListView>
             <Button x:Name="ReadExifButton" Content="ClickMe" Click="ReadExifButton_Click"/>
         </StackPanel>
-        <TextBox x:Name="DumpedJPEGTextBlock" Grid.Column="2"/>
+        <Grid Grid.Column="2">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <TextBox x:Name="DumpedJPEGTextBlock" Grid.Row="0"/>
+            <Image Source="{Binding ElementName=FoundImagesListView, Path=SelectedItem}" Grid.Row="1"/>
+        </Grid>
     </Grid>
 </Window>

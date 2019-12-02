@@ -28,16 +28,17 @@ namespace JPG_Viewer
         public MainWindow()
         {
             walker = new JPEGWalker();
-            //FolderBrowserDialog selectedFolderDialog = new FolderBrowserDialog();
-            //selectedFolderDialog.ShowDialog();
-            //FoundImages = walker.FindJPEGInDirectory(selectedFolderDialog.SelectedPath);
-            //FoundPaths = walker.FindAllPathsInDirectory(selectedFolderDialog.SelectedPath);
+            FolderBrowserDialog selectedFolderDialog = new FolderBrowserDialog();
+            selectedFolderDialog.ShowDialog();
+            FoundImages = walker.FindJPEGInDirectory(selectedFolderDialog.SelectedPath);
+            FoundPaths = walker.FindAllPathsInDirectory(selectedFolderDialog.SelectedPath);
             InitializeComponent();
         }
 
         private void ReadExifButton_Click(object sender, RoutedEventArgs e)
         {
-            DumpedJPEGTextBlock.Text = walker.ReadExifInFile("E:\\Милпградово2017\\Фото Милоградово 2017\\Лена\\IMG_6663.jpg");
+            if(FoundImagesListView.SelectedItem != null)
+                DumpedJPEGTextBlock.Text = walker.ReadExifInFile(FoundImagesListView.SelectedItem.ToString()); // "C:\\Users\\vovchenko\\Downloads\\JPEG_example_down.jpg"
         }
     }
 }
