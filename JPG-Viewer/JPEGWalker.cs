@@ -54,6 +54,16 @@ namespace JPG_Viewer
             b = temp;
         }
 
+        private string ReadExifTagsInFileStream(FileStream fileStream, BinaryReader reader)
+        {
+            return " > --- < ";
+        }
+
+        private string ReadTiffTagsInFileStream(FileStream fileStream, BinaryReader reader)
+        {
+            return " (^~^) ";
+        }
+
         public string ReadExifInFile(string path) // Функция начинает делать слишком много. Нужно переделать
         {
             // Каждый сектор заголовка JPEG состоит из
@@ -68,17 +78,34 @@ namespace JPG_Viewer
             {
                 using (BinaryReader reader = new BinaryReader(fs))
                 {
-                    fs.Seek(0, SeekOrigin.Begin);                              
+                    int mark = 0;
+                    fs.Seek(0, SeekOrigin.Begin);
                     // 0xE0 - старый JFIF, 0xE1 - более новая версия стандарта Exif. Есть проблемы с чтением APP0 и APP1 одновременно
-                    while (!((searchExifBuffer[0] == 0xFF) && ((searchExifBuffer[1] == 0xE0) || searchExifBuffer[1] == 0xE1))
-                        && fs.Position != fs.Length - 1)
+                    // У нас есть несколько вариантов развития событий:
+                    //      1. Нет ни EXIF, ни TIFF. Просто доходим до конца файла
+                    //      2. Нет EXIF, но есть TIFF.
+                    //      3. Нет TIFF, но есть EXIF.
+                    //      4. Есть и EXIF, и TIFF.
+                    // Если с первым пунктом все понятно (программное отделение jpeg от не-jpeg,
+                    // и вообще, разве есть кто-то, кто намеренно убирает APP0 или APP1?),
+                    // то с остальными я не знаю, что делать
+
+                    while (fs.Position != fs.Length - 1 && mark != 0xFFDA)
                     {
                         Swap(ref searchExifBuffer[0], ref searchExifBuffer[1]);
                         searchExifBuffer[1] = reader.ReadByte();
+                        mark = searchExifBuffer[1] << 0 | searchExifBuffer[0] << 8;
+                        switch (mark)
+                        {
+                            case (0xFFE0):
+                                kindaExif += ReadTiffTagsInFileStream(fs, reader); break;
+                            case (0xFFE1):
+                                kindaExif += ReadExifTagsInFileStream(fs, reader); break;
+                        }
                     }
-                    
+
                     if (fs.Position == fs.Length - 1)
-                        return "Несовместимый формат";
+                        return "Информация недоступна";
                     
                     ushort length = reader.ReadUInt16();
                     length = (ushort)((length << 8) | (length >> 8) & 0xFF); // изменение порядка байтов с little на big-endian. Любезно предоставлено переполнением стека
