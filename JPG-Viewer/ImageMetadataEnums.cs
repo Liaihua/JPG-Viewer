@@ -6,6 +6,17 @@ using System.Threading.Tasks;
 
 namespace JPG_Viewer
 {
+    enum IFDTypeEnum
+    {
+        Byte        =  1,
+        ASCII       =  2,
+        Short       =  3,
+        Long        =  4,
+        Rational    =  5,
+        Undefined   =  7,
+        SLong       =  9,
+        SRational   = 10,
+    }
     enum EXIFMetadataEnum // Нужно присвоить каждому из свойств Exif и TIFF соответствующий двухбайтный маркер
     {
         ExposureTime                        = 0x829A,
@@ -63,7 +74,7 @@ namespace JPG_Viewer
         Sharpness                           = 0xA40A,
         DeviceSettingDescription            = 0xA40B,
         SubjectDistanceRange                = 0xA40C,
-        ImageUniqueID                       = 0xA420
+        ImageUniqueID                       = 0xA420,
     }
     enum TIFFMetadataEnum
     {

@@ -10,6 +10,7 @@ namespace JPG_Viewer
 {
     class JPEGWalker
     {
+        bool isLittleEndian;
         public List<string> FindJPEGInDirectory(string dir)
         {
             if (string.IsNullOrWhiteSpace(dir))
@@ -30,7 +31,7 @@ namespace JPG_Viewer
             return JPEGPaths;
         }
 
-        public List<string> FindAllPathsInDirectory(string dir)
+        public List<string> FindAllPathsInDirectory(string dir) // Данный метод не просматривает вложенность каталогов
         {
             if (string.IsNullOrWhiteSpace(dir))
                 return null;
@@ -40,11 +41,26 @@ namespace JPG_Viewer
             {
                 foreach (var d in directory.GetDirectories("*", SearchOption.AllDirectories).ToList())
                 {
-                    Dirs.Add(d.Name);
+                    Dirs.Add(d.Parent + "/" + d.Name);
                 }
             }
             catch (Exception ex) { System.Windows.MessageBox.Show(ex.Message); }
             return Dirs;
+        }
+
+        public float GetFileLength(string path)
+        {
+            return new FileInfo(path).Length / 1024;
+        }
+
+        private bool CheckEndiannessInStream(BinaryReader reader) // true - для прямого порядка (LE), false - для обратного (BE)
+        {
+            ushort endianTag = reader.ReadUInt16();
+            ushort Tag42 = reader.ReadUInt16();
+            if (endianTag == 0x4949 && Tag42 == 0x002A) // "II"
+                return true;
+            else                                        // "MM"
+                return false;
         }
 
         private void Swap(ref byte a, ref byte b)
@@ -54,14 +70,56 @@ namespace JPG_Viewer
             b = temp;
         }
 
-        private string ReadExifTagsInFileStream(FileStream fileStream, BinaryReader reader)
+        private string ReadExifTagsInFileStream(BinaryReader reader)
         {
-            return " > --- < ";
+            string foundTags = "";
+            ushort length = reader.ReadUInt16();
+            length = (ushort)(((length << 8) | (length >> 8) & 0xFF) - 2); // изменение порядка байтов с little на big-endian. Любезно предоставлено переполнением стека
+            ushort mark = 0;
+            while (length-- > 0)
+            {
+                if(isLittleEndian)
+                    mark = (ushort)(reader.ReadByte() << 0 | mark << 8);
+                else
+                    mark = (ushort)(reader.ReadByte() << 8 | mark << 0);
+                switch (mark)
+                {
+                    case (ushort)EXIFMetadataEnum.Contrast:
+                        MessageBox.Show(reader.ReadString());
+                        break;
+                    case (ushort)TIFFMetadataEnum.GPSInfoIFDPointer:
+                        MessageBox.Show(reader.ReadString());
+                        break;
+                }
+                foundTags += Encoding.UTF8.GetString(new byte[] { (byte)(mark >> 0)}); // надо узнать информацию о маркерах метаинфы в спецификации
+            }
+            return foundTags;
         }
 
-        private string ReadTiffTagsInFileStream(FileStream fileStream, BinaryReader reader)
+        private string ReadTiffTagsInFileStream(BinaryReader reader)
         {
-            return " (^~^) ";
+            string foundTags = "";
+            ushort length = reader.ReadUInt16();
+            length = (ushort)(((length << 8) | (length >> 8) & 0xFF) - 2);
+            ushort mark = 0;
+            while (length-- != 0)
+            {
+                if (isLittleEndian)
+                    mark = (ushort)(reader.ReadByte() << 0 | mark << 8);
+                else
+                    mark = (ushort)(reader.ReadByte() << 8 | mark << 0);
+                
+                /*
+                switch(mark)
+                {
+                    case (ushort)TIFFMetadataEnum.DateTime:
+                        MessageBox.Show($"{mark}");
+                        break;
+                }
+                */
+                foundTags += Encoding.UTF8.GetString(new byte[] { (byte)(mark >> 0)});
+            }
+            return foundTags;
         }
 
         public string ReadExifInFile(string path) // Функция начинает делать слишком много. Нужно переделать
@@ -74,11 +132,12 @@ namespace JPG_Viewer
             // Есть вариант с чтением до маркера SOS, используя switch(mark)
             string kindaExif = "";
             byte[] searchExifBuffer = { 0x00, 0x00 };
+
             using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read))
             {
                 using (BinaryReader reader = new BinaryReader(fs))
                 {
-                    int mark = 0;
+                    ushort mark = 0; // зта переменная используется в качестве двухбайтового контейнера
                     fs.Seek(0, SeekOrigin.Begin);
                     // 0xE0 - старый JFIF, 0xE1 - более новая версия стандарта Exif. Есть проблемы с чтением APP0 и APP1 одновременно
                     // У нас есть несколько вариантов развития событий:
@@ -87,31 +146,23 @@ namespace JPG_Viewer
                     //      3. Нет TIFF, но есть EXIF.
                     //      4. Есть и EXIF, и TIFF.
                     
-                    while (fs.Position != fs.Length - 1 && mark != 0xFFDA)
+                    while (fs.Position != fs.Length - 1 && mark != 0xFFDA) // Поиск тегов APP0 и APP1, вплоть до DQT
                     {
-                        Swap(ref searchExifBuffer[0], ref searchExifBuffer[1]);
-                        searchExifBuffer[1] = reader.ReadByte();
-                        mark = searchExifBuffer[1] << 0 | searchExifBuffer[0] << 8;
+                        mark = (ushort)(reader.ReadByte() << 0 | mark << 8);
                         switch (mark)
                         {
                             case (0xFFE0):
-                                kindaExif += ReadTiffTagsInFileStream(fs, reader); break;
+                                kindaExif += ReadTiffTagsInFileStream(reader);
+                                break;
                             case (0xFFE1):
-                                kindaExif += ReadExifTagsInFileStream(fs, reader); break;
+                                kindaExif += ReadExifTagsInFileStream(reader);
+                                break;
                         }
                     }
 
-                    if (fs.Position == fs.Length - 1)
+                    if (fs.Position == fs.Length - 1) // Если оба тега отсутствуют
                         return "Информация недоступна";
-                    
-                    ushort length = reader.ReadUInt16();
-                    length = (ushort)((length << 8) | (length >> 8) & 0xFF); // изменение порядка байтов с little на big-endian. Любезно предоставлено переполнением стека
-                    MessageBox.Show(length.ToString());
-                    
-                    length -= 2;
-                    while(length-- != 0)
-                        kindaExif += Encoding.UTF8.GetString(reader.ReadBytes(1)); // надо узнать информацию о маркерах метаинфы в спецификации
-                    
+                    kindaExif += GetFileLength(path);
                 }
             }
             return kindaExif;
