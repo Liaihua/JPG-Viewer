@@ -14,7 +14,7 @@
         </Grid.ColumnDefinitions>
         <TreeView x:Name="DirectoriesTreeView" Grid.Column="0" ItemsSource="{Binding FoundPaths, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"/>
         <StackPanel Orientation="Vertical" Grid.Column="1">
-            <ListView x:Name="FoundImagesListView" Grid.Column="1" ItemsSource="{Binding FoundImages, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}">
+            <ListView x:Name="FoundImagesListView" Grid.Column="1" SelectionChanged="FoundImagesListView_Changed" ItemsSource="{Binding FoundImages, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}">
                 <ListView.View>
                     <GridView>
                         <GridView.Columns>
@@ -24,7 +24,6 @@
                     </GridView>
                 </ListView.View>
             </ListView>
-            <Button x:Name="ReadExifButton" Content="ClickMe" Click="ReadExifButton_Click"/>
         </StackPanel>
         <Grid Grid.Column="2">
             <Grid.RowDefinitions>

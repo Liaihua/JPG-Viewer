@@ -35,9 +35,9 @@ namespace JPG_Viewer
             InitializeComponent();
         }
 
-        private void ReadExifButton_Click(object sender, RoutedEventArgs e)
+        private void FoundImagesListView_Changed(object sender, SelectionChangedEventArgs e)
         {
-            if(FoundImagesListView.SelectedItem != null)
+            if (FoundImagesListView.SelectedItem != null)
                 DumpedJPEGTextBlock.Text = walker.ReadExifInFile(FoundImagesListView.SelectedItem.ToString()); // "C:\\Users\\vovchenko\\Downloads\\JPEG_example_down.jpg"
         }
     }

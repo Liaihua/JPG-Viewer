@@ -8,7 +8,10 @@ using System.Windows.Forms;
 
 namespace JPG_Viewer
 {
-    class JPEGWalker
+    // У меня есть 2 основных варианта по созданию приложения:
+    //  1. Продолжать разрабатывать функционал для чтения JPEG, затем п.2
+    //  2. Временно перейти к попытке связать между собой БД и приложение (тут тоже есть свои проблемы), затем п.1
+    class JPEGWalker 
     {
         bool isLittleEndian;
         public List<string> FindJPEGInDirectory(string dir)
@@ -22,8 +25,7 @@ namespace JPG_Viewer
                 foreach (FileInfo file in directory.GetFiles("*", SearchOption.AllDirectories))
                 {
                     if (file.Extension.Contains("jpg")  ||
-                        file.Extension.Contains("jpeg") || 
-                        file.Extension.Contains("jfif"))
+                        file.Extension.Contains("jpeg"))
                         JPEGPaths.Add(file.FullName);
                 }
             }
@@ -31,7 +33,7 @@ namespace JPG_Viewer
             return JPEGPaths;
         }
 
-        public List<string> FindAllPathsInDirectory(string dir) // Данный метод не просматривает вложенность каталогов
+        public List<string> FindAllPathsInDirectory(string dir) // Данный метод не предусматривает вложенность каталогов
         {
             if (string.IsNullOrWhiteSpace(dir))
                 return null;
@@ -55,40 +57,36 @@ namespace JPG_Viewer
 
         private bool CheckEndiannessInStream(BinaryReader reader) // true - для прямого порядка (LE), false - для обратного (BE)
         {
+            reader.BaseStream.Seek(8, SeekOrigin.Current);
             ushort endianTag = reader.ReadUInt16();
             ushort Tag42 = reader.ReadUInt16();
+            reader.BaseStream.Seek(-12, SeekOrigin.Current);
             if (endianTag == 0x4949 && Tag42 == 0x002A) // "II"
                 return true;
             else                                        // "MM"
                 return false;
         }
 
-        private void Swap(ref byte a, ref byte b)
-        {
-            byte temp = a;
-            a = b;
-            b = temp;
-        }
-
         private string ReadExifTagsInFileStream(BinaryReader reader)
         {
             string foundTags = "";
+            isLittleEndian = CheckEndiannessInStream(reader);
             ushort length = reader.ReadUInt16();
-            length = (ushort)(((length << 8) | (length >> 8) & 0xFF) - 2); // изменение порядка байтов с little на big-endian. Любезно предоставлено переполнением стека
+            if(!isLittleEndian)
+                length = (ushort)(((length << 8) | (length >> 8) & 0xFF) - 2); // изменение порядка байтов с little на big-endian. Любезно предоставлено переполнением стека
+            reader.BaseStream.Seek(8, SeekOrigin.Current); // пропускаем '<длина>Exif\0\0'
+            
             ushort mark = 0;
             while (length-- > 0)
             {
-                if(isLittleEndian)
-                    mark = (ushort)(reader.ReadByte() << 0 | mark << 8);
-                else
-                    mark = (ushort)(reader.ReadByte() << 8 | mark << 0);
+                mark = (ushort)(reader.ReadByte() << 0 | mark << 8);
                 switch (mark)
                 {
                     case (ushort)EXIFMetadataEnum.Contrast:
-                        MessageBox.Show(reader.ReadString());
+                        MessageBox.Show("contrast");
                         break;
-                    case (ushort)TIFFMetadataEnum.GPSInfoIFDPointer:
-                        MessageBox.Show(reader.ReadString());
+                    case (ushort)TIFFMetadataEnum.Make:
+                        //MessageBox.Show("make");
                         break;
                 }
                 foundTags += Encoding.UTF8.GetString(new byte[] { (byte)(mark >> 0)}); // надо узнать информацию о маркерах метаинфы в спецификации
@@ -131,14 +129,13 @@ namespace JPG_Viewer
             // Надо найти спецификацию JPEG, наименования маркеров и сделать чтение по этим маркерам
             // Есть вариант с чтением до маркера SOS, используя switch(mark)
             string kindaExif = "";
-            byte[] searchExifBuffer = { 0x00, 0x00 };
 
             using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read))
             {
                 using (BinaryReader reader = new BinaryReader(fs))
                 {
                     ushort mark = 0; // зта переменная используется в качестве двухбайтового контейнера
-                    fs.Seek(0, SeekOrigin.Begin);
+                                        
                     // 0xE0 - старый JFIF, 0xE1 - более новая версия стандарта Exif. Есть проблемы с чтением APP0 и APP1 одновременно
                     // У нас есть несколько вариантов развития событий:
                     //      1. Нет ни EXIF, ни TIFF. Просто доходим до конца файла. Вообще, разве есть кто-то, кто намеренно убирает APP0 или APP1?
@@ -152,14 +149,15 @@ namespace JPG_Viewer
                         switch (mark)
                         {
                             case (0xFFE0):
-                                kindaExif += ReadTiffTagsInFileStream(reader);
+                                //kindaExif += ReadTiffTagsInFileStream(reader);
                                 break;
                             case (0xFFE1):
                                 kindaExif += ReadExifTagsInFileStream(reader);
                                 break;
                         }
                     }
-
+                    if (kindaExif == "")
+                        kindaExif = "Нет данных";
                     if (fs.Position == fs.Length - 1) // Если оба тега отсутствуют
                         return "Информация недоступна";
                     kindaExif += GetFileLength(path);
