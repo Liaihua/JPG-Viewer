@@ -5,16 +5,28 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:JPG_Viewer"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800" WindowStartupLocation="CenterScreen">
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="24px"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="140"/>
             <ColumnDefinition/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <TreeView x:Name="DirectoriesTreeView" Grid.Column="0" ItemsSource="{Binding FoundPaths, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"/>
-        <StackPanel Orientation="Vertical" Grid.Column="1">
-            <ListView x:Name="FoundImagesListView" Grid.Column="1" SelectionChanged="FoundImagesListView_Changed" ItemsSource="{Binding FoundImages, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}">
+        
+        <Menu Grid.ColumnSpan="3" Grid.Row="0">
+            <MenuItem Header="Главная">
+                <MenuItem Header="Новое окно" Click="NewWindowMenuItem_Click"/>
+            </MenuItem>
+        </Menu>
+        
+        <TreeView x:Name="DirectoriesTreeView" Grid.Column="0" Grid.Row="1" ItemsSource="{Binding FoundPaths, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"/>
+        <StackPanel Orientation="Vertical" Grid.Column="1" Grid.Row="1">
+            <ListView x:Name="FoundImagesListView" Grid.Column="1" Grid.Row="1" SelectionChanged="FoundImagesListView_Changed" ItemsSource="{Binding FoundImages, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}">
                 <ListView.View>
                     <GridView>
                         <GridView.Columns>
@@ -25,7 +37,7 @@
                 </ListView.View>
             </ListView>
         </StackPanel>
-        <Grid Grid.Column="2">
+        <Grid Grid.Column="2" Grid.Row="1">
             <Grid.RowDefinitions>
                 <RowDefinition/>
                 <RowDefinition/>

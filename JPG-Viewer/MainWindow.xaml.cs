@@ -40,5 +40,11 @@ namespace JPG_Viewer
             if (FoundImagesListView.SelectedItem != null)
                 DumpedJPEGTextBlock.Text = walker.ReadExifInFile(FoundImagesListView.SelectedItem.ToString()); // "C:\\Users\\vovchenko\\Downloads\\JPEG_example_down.jpg"
         }
+
+        private void NewWindowMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+            new MainWindow().Show();
+        }
     }
 }

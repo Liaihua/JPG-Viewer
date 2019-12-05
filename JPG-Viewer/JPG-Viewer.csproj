@@ -66,6 +66,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ExifTag.cs" />
     <Compile Include="ImageMetadataEnums.cs" />
     <Compile Include="JPEGWalker.cs" />
     <Compile Include="MainWindow.xaml.cs">
