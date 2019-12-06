@@ -17,13 +17,13 @@
             <ColumnDefinition/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        
-        <Menu Grid.ColumnSpan="3" Grid.Row="0">
-            <MenuItem Header="Главная">
+
+        <Menu Grid.ColumnSpan="3" Grid.Row="0" VerticalAlignment="Stretch">
+            <MenuItem Header="Главная" VerticalAlignment="Center">
                 <MenuItem Header="Новое окно" Click="NewWindowMenuItem_Click"/>
             </MenuItem>
         </Menu>
-        
+
         <TreeView x:Name="DirectoriesTreeView" Grid.Column="0" Grid.Row="1" ItemsSource="{Binding FoundPaths, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"/>
         <StackPanel Orientation="Vertical" Grid.Column="1" Grid.Row="1">
             <ListView x:Name="FoundImagesListView" Grid.Column="1" Grid.Row="1" SelectionChanged="FoundImagesListView_Changed" ItemsSource="{Binding FoundImages, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}">
@@ -39,11 +39,17 @@
         </StackPanel>
         <Grid Grid.Column="2" Grid.Row="1">
             <Grid.RowDefinitions>
-                <RowDefinition/>
+                <RowDefinition>
+                    <RowDefinition.Style>
+                        <Style>
+                            <Setter Property="Block.BorderBrush" Value="Black"/>
+                        </Style>
+                    </RowDefinition.Style>
+                </RowDefinition>
                 <RowDefinition/>
             </Grid.RowDefinitions>
-            <TextBox x:Name="DumpedJPEGTextBlock" Grid.Row="0" ScrollViewer.HorizontalScrollBarVisibility="Visible"/>
-            <Image Source="{Binding ElementName=FoundImagesListView, Path=SelectedItem}" Grid.Row="1"/>
+            <Image Source="{Binding ElementName=FoundImagesListView, Path=SelectedItem}" Grid.Row="0"/>
+            <TextBox x:Name="DumpedJPEGTextBlock" Grid.Row="1" ScrollViewer.HorizontalScrollBarVisibility="Visible"/>
         </Grid>
     </Grid>
 </Window>

@@ -32,6 +32,7 @@ namespace JPG_Viewer
             selectedFolderDialog.ShowDialog();
             FoundImages = walker.FindJPEGInDirectory(selectedFolderDialog.SelectedPath);
             FoundPaths = walker.FindAllPathsInDirectory(selectedFolderDialog.SelectedPath);
+            
             InitializeComponent();
         }
 
@@ -43,8 +44,8 @@ namespace JPG_Viewer
 
         private void NewWindowMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            Close();
             new MainWindow().Show();
+            Close();
         }
     }
 }
