@@ -85,16 +85,33 @@ namespace JPG_Viewer
             ushort tag = EndiannessIO.ReadUInt16(reader.ReadUInt16(), LittleEndian.Value);
             ushort type = EndiannessIO.ReadUInt16(reader.ReadUInt16(), LittleEndian.Value);
             uint count = EndiannessIO.ReadUInt32(reader.ReadUInt32(), LittleEndian.Value);
-            byte[] valueOrOffset = BitConverter.GetBytes(EndiannessIO.ReadUInt32(reader.ReadUInt32(), LittleEndian.Value));
+            byte[] valueOrOffset = BitConverter.GetBytes(EndiannessIO.ReadUInt32(reader.ReadUInt32(), !LittleEndian.Value));
             switch(type)
             {
+                case (int)IFDTypeEnum.Byte:
+                    if (count > 4)
+                    {
+                        reader.BaseStream.Seek(EndiannessIO.ReadUInt32(BitConverter.ToUInt32(valueOrOffset, 0), false), SeekOrigin.Begin);
+                        return reader.ReadBytes((int)count);
+                    }
+                    else
+                        return valueOrOffset;
                 case (int)IFDTypeEnum.ASCII:
                     if (count > 4)
                     {
                         reader.BaseStream.Seek(EndiannessIO.ReadUInt32(BitConverter.ToUInt32(valueOrOffset, 0), false), SeekOrigin.Begin);
                         return reader.ReadBytes((int)count);
                     }
-                    break;
+                    else
+                        return valueOrOffset;
+                case (int)IFDTypeEnum.Short:
+                    if (count > 2)
+                    {
+                        reader.BaseStream.Seek(EndiannessIO.ReadUInt32(BitConverter.ToUInt32(valueOrOffset, 0), false), SeekOrigin.Begin);
+                        return reader.ReadBytes((int)count);
+                    }
+                    else
+                        return reader.ReadBytes((int)count);
             }
             return valueOrOffset;
         }
@@ -119,9 +136,13 @@ namespace JPG_Viewer
             if (firstIFDOffset < 0x00000008)
                 return "Неверные данные TIFF (Неправильное смещение IFD)";
 
+            //reader.BaseStream.Seek(tiffPosition + firstIFDOffset, SeekOrigin.Begin);
+            
+            long dirPosition = reader.BaseStream.Position;
+             
             for (int i = 0; i < entries; i++)
             {
-                foundTags += ASCIIEncoding.ASCII.GetString(ReadExifTag(reader, reader.BaseStream.Position)) + '\n'; // набросок
+                foundTags += Encoding.ASCII.GetString(ReadExifTag(reader, dirPosition + i * 12)) + '\n'; // набросок
             }
             
             ushort exifTag = 0;
