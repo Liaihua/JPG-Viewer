@@ -15,7 +15,7 @@ namespace JPG_Viewer
     // Есть также вариант по созданию функции, которая могла бы искать инфу по определенному тегу
     // (так то у меня есть ф-ии ReadExifTagsInStream и ReadExifInFile, но тут-то все выглядит довольно громоздко: 
     // они отвечают за выдачу **всех** тегов, а не отдельного)
-    class JPEGWalker 
+    class JPEGWalker
     {
         bool? LittleEndian;
         Dictionary<int, string> LoadedExifTags;
@@ -30,7 +30,7 @@ namespace JPG_Viewer
             {
                 foreach (FileInfo file in directory.GetFiles("*", SearchOption.AllDirectories))
                 {
-                    if (file.Extension.Contains("jpg")  ||
+                    if (file.Extension.Contains("jpg") ||
                         file.Extension.Contains("jpeg"))
                         JPEGPaths.Add(file.FullName);
                 }
@@ -79,41 +79,115 @@ namespace JPG_Viewer
                 return null;
         }
 
-        public byte[] ReadExifTag(BinaryReader reader, long tiffHeader)
+        // Я решил возвращать не просто строку, но пару ключ-значение. Я думаю, это пригодится, когда я изменю дизайн
+        // Exif-окна (вместо textbox - listview с двумя столбиками)
+        public ExifTag ReadExifTag(BinaryReader reader, long tiffHeader)
         {
             reader.BaseStream.Seek(tiffHeader, SeekOrigin.Begin);
             ushort tag = EndiannessIO.ReadUInt16(reader.ReadUInt16(), LittleEndian.Value);
             ushort type = EndiannessIO.ReadUInt16(reader.ReadUInt16(), LittleEndian.Value);
             uint count = EndiannessIO.ReadUInt32(reader.ReadUInt32(), LittleEndian.Value);
             byte[] valueOrOffset = BitConverter.GetBytes(EndiannessIO.ReadUInt32(reader.ReadUInt32(), !LittleEndian.Value));
-            switch(type)
+            ExifTag currentExifTag = new ExifTag(
+                    LoadedExifTags.First(item => item.Key == tag).Value, null);
+
+            switch (type)
             {
                 case (int)IFDTypeEnum.Byte:
+                case (int)IFDTypeEnum.Undefined:
                     if (count > 4)
                     {
-                        reader.BaseStream.Seek(EndiannessIO.ReadUInt32(BitConverter.ToUInt32(valueOrOffset, 0), false), SeekOrigin.Begin);
-                        return reader.ReadBytes((int)count);
+                        reader.BaseStream.Seek(
+                            EndiannessIO.ReadUInt32(
+                                BitConverter.ToUInt32(valueOrOffset, 0), false) + tiffHeader,
+                            SeekOrigin.Begin);
+                        currentExifTag.TagValue = Encoding.ASCII.GetString(
+                                reader.ReadBytes((int)count)
+                                );
                     }
                     else
-                        return valueOrOffset;
+                        currentExifTag.TagValue =
+                            Encoding.ASCII.GetString(valueOrOffset);
+                    break;
                 case (int)IFDTypeEnum.ASCII:
                     if (count > 4)
                     {
-                        reader.BaseStream.Seek(EndiannessIO.ReadUInt32(BitConverter.ToUInt32(valueOrOffset, 0), false), SeekOrigin.Begin);
-                        return reader.ReadBytes((int)count);
+                        reader.BaseStream.Seek(
+                            EndiannessIO.ReadUInt32(
+                                BitConverter.ToUInt32(valueOrOffset, 0), false) + tiffHeader,
+                            SeekOrigin.Begin);
+                        currentExifTag.TagValue =
+                            Encoding.ASCII.GetString(
+                                reader.ReadBytes((int)count)
+                                );
                     }
                     else
-                        return valueOrOffset;
+                        currentExifTag.TagValue = Encoding.ASCII.GetString(valueOrOffset);
+                    break;
                 case (int)IFDTypeEnum.Short:
                     if (count > 2)
                     {
-                        reader.BaseStream.Seek(EndiannessIO.ReadUInt32(BitConverter.ToUInt32(valueOrOffset, 0), false), SeekOrigin.Begin);
-                        return reader.ReadBytes((int)count);
+                        reader.BaseStream.Seek(
+                            EndiannessIO.ReadUInt32(
+                                BitConverter.ToUInt32(valueOrOffset, 0), false) + tiffHeader,
+                            SeekOrigin.Begin);
+                        currentExifTag.TagValue =
+                            Encoding.ASCII.GetString(reader.ReadBytes((int)count)
+                            );
                     }
                     else
-                        return reader.ReadBytes((int)count);
+                        currentExifTag.TagValue =
+                            EndiannessIO.ReadUInt16(
+                                reader.ReadUInt16(), LittleEndian.Value).ToString();
+                    break;
+                case (int)IFDTypeEnum.Long:
+                    if (count > 1)
+                    {
+                        reader.BaseStream.Seek(
+                            EndiannessIO.ReadUInt32(
+                                BitConverter.ToUInt32(valueOrOffset, 0), false) + tiffHeader,
+                            SeekOrigin.Begin);
+                        currentExifTag.TagValue =
+                            EndiannessIO.ReadUInt32(reader.ReadUInt32(), LittleEndian.Value).ToString();
+                    }
+                    else
+                        currentExifTag.TagValue =
+                            EndiannessIO.ReadUInt32(
+                                BitConverter.ToUInt32(valueOrOffset, 0), LittleEndian.Value).ToString();
+
+                    break;
+                case (int)IFDTypeEnum.Rational:
+                    if(count > 1) { }
+                    else
+                    {
+                        reader.BaseStream.Seek(
+                            EndiannessIO.ReadUInt32(
+                                BitConverter.ToUInt32(valueOrOffset, 0), false) + tiffHeader,
+                            SeekOrigin.Begin);
+                        uint numerator = EndiannessIO.ReadUInt32(reader.ReadUInt32(), LittleEndian.Value);
+                        uint denominator = EndiannessIO.ReadUInt32(reader.ReadUInt32(), LittleEndian.Value);
+                        currentExifTag.TagValue = $"{numerator / (denominator * 1.0)} [{numerator}/{denominator}]";
+                    }
+                    break;
+                case (int)IFDTypeEnum.SLong:
+                    if (count > 1)
+                    {
+                        reader.BaseStream.Seek(
+                            EndiannessIO.ReadInt32(
+                                BitConverter.ToInt32(valueOrOffset, 0), false) + tiffHeader,
+                            SeekOrigin.Begin);
+                        currentExifTag.TagValue =
+                            EndiannessIO.ReadInt32(reader.ReadInt32(), LittleEndian.Value).ToString();
+                    }
+                    else
+                        currentExifTag.TagValue =
+                            EndiannessIO.ReadInt32(
+                                BitConverter.ToInt32(valueOrOffset, 0), LittleEndian.Value).ToString();
+                    break;
+                case (int)IFDTypeEnum.SRational:
+                    break;
             }
-            return valueOrOffset;
+            return currentExifTag;
         }
 
         private string ReadExifTagsInFileStream(BinaryReader reader) // Поиск тегов в файле
@@ -136,15 +210,13 @@ namespace JPG_Viewer
             if (firstIFDOffset < 0x00000008)
                 return "Неверные данные TIFF (Неправильное смещение IFD)";
 
-            //reader.BaseStream.Seek(tiffPosition + firstIFDOffset, SeekOrigin.Begin);
-            
             long dirPosition = reader.BaseStream.Position;
-             
+
             for (int i = 0; i < entries; i++)
             {
-                foundTags += Encoding.ASCII.GetString(ReadExifTag(reader, dirPosition + i * 12)) + '\n'; // набросок
+                foundTags += ReadExifTag(reader, dirPosition + i * 12).TagValue + '\n'; // набросок
             }
-            
+            /*
             ushort exifTag = 0;
             
             {
@@ -156,12 +228,14 @@ namespace JPG_Viewer
                 //}
                 
                 foundTags += Encoding.UTF8.GetString(new byte[] { (byte)(exifTag >> 0)}); // надо узнать информацию о маркерах метаинфы в спецификации
-            }
+            }*/
             return foundTags;
         }
 
         public string ReadExifInFile(string path) // Поиск APP1 в файле
         {
+            // У нас есть вариант, позволяющий не просматривать каждые два байта, а "прыгать" по основным тегам,
+            // что по идее позволит тратить меньше времени на чтение файла
             // Каждый сектор заголовка JPEG состоит из
             //      1. маркера (0xFFE1 - Exif)
             //      2. длины сектора (два байта) + 2б длина маркера
@@ -170,10 +244,41 @@ namespace JPG_Viewer
             // Есть вариант с чтением до маркера SOS, используя switch(mark)
             string kindaExif = "";
             LoadedExifTags = GetExifTagsFromDictionary();
+
             using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read))
             {
                 using (BinaryReader reader = new BinaryReader(fs))
                 {
+                    if (reader.ReadByte() != 0xFF || reader.ReadByte() != 0xD8)
+                        return "Испорченный файл";
+
+                    long offset = 2;
+                    byte mark = 0;
+                    while (offset < fs.Length - 1)
+                    {
+                        fs.Seek(offset, SeekOrigin.Begin);
+                        mark = reader.ReadByte();
+                        if (mark != 0xFF)
+                            return "Нет данных"; //"Испорченный заголовок на позиции: " + reader.BaseStream.Position;
+                        mark = reader.ReadByte();
+
+                        if (mark == 0xE1)
+                        {
+                            kindaExif += ReadExifTagsInFileStream(reader);
+                            return kindaExif;
+                        }
+                        else
+                        {
+                            if (mark == 0xDB || // DQT
+                               mark == 0xC0 || // SOF
+                               mark == 0xC4 || // DHT
+                               mark == 0xDA)   // SOS
+                                return "Нет данных";
+                            offset += 2 + EndiannessIO.ReadUInt16(reader.ReadUInt16(), false);
+                        }
+                    }
+
+                    /*
                     ushort mark = 0; // зта переменная используется в качестве двухбайтового контейнера
                     
                     while (fs.Position != fs.Length - 1 && mark != 0xFFDA) // Поиск тега APP1 вплоть до DQT
@@ -185,6 +290,7 @@ namespace JPG_Viewer
                             break;
                         }
                     }
+                    */
                     if (kindaExif == "")
                         kindaExif = "Нет данных";
                     if (fs.Position == fs.Length - 1) // Если тег отсутствует
@@ -203,7 +309,7 @@ namespace JPG_Viewer
                 foreach (var tag in (Dictionary<string, string>)jsonSerializer.ReadObject(fs))
                     exifTags.Add(int.Parse(tag.Key, System.Globalization.NumberStyles.HexNumber), tag.Value);
             }
-            if(exifTags.Count < 1)
+            if (exifTags.Count < 1)
                 return null;
             return exifTags;
         }

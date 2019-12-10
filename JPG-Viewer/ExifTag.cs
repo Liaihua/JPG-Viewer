@@ -8,17 +8,12 @@ namespace JPG_Viewer
 {
     class ExifTag
     {
-        ushort Tag { get; set; }
-        ushort Type { get; set; }
-        ushort Length { get; set; }
-        byte[] Content { get; set; }
-        string TagDescription { get; }
+        public string TagDescription { get; }
+        public string TagValue { get; set; }
         
-        public ExifTag(ushort tag, ushort type, ushort length, string tagDescription)
+        public ExifTag(string tagDescription, string tagValue)
         {
-            Tag = tag;
-            Type = type;
-            Length = length;
+            TagValue = tagValue;
             TagDescription = tagDescription;
         }
     }

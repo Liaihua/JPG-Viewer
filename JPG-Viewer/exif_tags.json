@@ -1,0 +1,358 @@
+[
+    {
+        "Key": "0000829A",
+        "Value": "ExposureTime"
+    },
+    {
+        "Key": "0000829D",
+        "Value": "FNumber"
+    },
+    {
+        "Key": "00008822",
+        "Value": "ExposureProgram"
+    },
+    {
+        "Key": "00008824",
+        "Value": "SpectralSensitivity"
+    },
+    {
+        "Key": "00008828",
+        "Value": "OECF"
+    },
+    {
+        "Key": "00008833",
+        "Value": "ISOSpeed"
+    },
+    {
+        "Key": "00009000",
+        "Value": "ExifVersion"
+    },
+    {
+        "Key": "00009003",
+        "Value": "DateTimeOriginal"
+    },
+    {
+        "Key": "00009004",
+        "Value": "DateTimeDigitized"
+    },
+    {
+        "Key": "00009101",
+        "Value": "ComponentsConfiguration"
+    },
+    {
+        "Key": "00009102",
+        "Value": "CompressedBitsPerPixel"
+    },
+    {
+        "Key": "00009201",
+        "Value": "ShutterSpeedValue"
+    },
+    {
+        "Key": "00009202",
+        "Value": "ApertureValue"
+    },
+    {
+        "Key": "00009203",
+        "Value": "BrightnessValue"
+    },
+    {
+        "Key": "00009204",
+        "Value": "ExposureBiasValue"
+    },
+    {
+        "Key": "00009205",
+        "Value": "MaxApertureValue"
+    },
+    {
+        "Key": "00009206",
+        "Value": "SubjectDistance"
+    },
+    {
+        "Key": "00009207",
+        "Value": "MeteringMode"
+    },
+    {
+        "Key": "00009208",
+        "Value": "LightSource"
+    },
+    {
+        "Key": "00009209",
+        "Value": "Flash"
+    },
+    {
+        "Key": "0000920A",
+        "Value": "FocalLength"
+    },
+    {
+        "Key": "0000920B",
+        "Value": "SubjectArea"
+    },
+    {
+        "Key": "0000927C",
+        "Value": "MakerNote"
+    },
+    {
+        "Key": "00009286",
+        "Value": "UserComment"
+    },
+    {
+        "Key": "00009290",
+        "Value": "SubsecTime"
+    },
+    {
+        "Key": "00009291",
+        "Value": "SubsecTimeOriginal"
+    },
+    {
+        "Key": "00009292",
+        "Value": "SubsecTimeDigitized"
+    },
+    {
+        "Key": "0000A000",
+        "Value": "FlashpixVersion"
+    },
+    {
+        "Key": "0000A001",
+        "Value": "ColorSpace"
+    },
+    {
+        "Key": "0000A002",
+        "Value": "PixelXDimension"
+    },
+    {
+        "Key": "0000A003",
+        "Value": "PixelYDimension"
+    },
+    {
+        "Key": "0000A004",
+        "Value": "RelatedSoundFile"
+    },
+    {
+        "Key": "0000A20B",
+        "Value": "FlashEnergy"
+    },
+    {
+        "Key": "0000A20C",
+        "Value": "SpatialFrequencyResponse"
+    },
+    {
+        "Key": "0000A20E",
+        "Value": "FocalPlaneXResolution"
+    },
+    {
+        "Key": "0000A20F",
+        "Value": "FocalPlaneYResolution"
+    },
+    {
+        "Key": "0000A210",
+        "Value": "FocalPlaneResolutionUnit"
+    },
+    {
+        "Key": "0000A214",
+        "Value": "SubjectLocation"
+    },
+    {
+        "Key": "0000A215",
+        "Value": "ExposureIndex"
+    },
+    {
+        "Key": "0000A217",
+        "Value": "SensingMethod"
+    },
+    {
+        "Key": "0000A300",
+        "Value": "FileSource"
+    },
+    {
+        "Key": "0000A301",
+        "Value": "SceneType"
+    },
+    {
+        "Key": "0000A302",
+        "Value": "CFAPattern"
+    },
+    {
+        "Key": "0000A401",
+        "Value": "CustomRendered"
+    },
+    {
+        "Key": "0000A402",
+        "Value": "ExposureMode"
+    },
+    {
+        "Key": "0000A403",
+        "Value": "WhiteBalance"
+    },
+    {
+        "Key": "0000A404",
+        "Value": "DigitalZoomRation"
+    },
+    {
+        "Key": "0000A405",
+        "Value": "FocalLengthIn35mmFilm"
+    },
+    {
+        "Key": "0000A406",
+        "Value": "SceneCaptureType"
+    },
+    {
+        "Key": "0000A407",
+        "Value": "GainControl"
+    },
+    {
+        "Key": "0000A408",
+        "Value": "Contrast"
+    },
+    {
+        "Key": "0000A409",
+        "Value": "Saturation"
+    },
+    {
+        "Key": "0000A40A",
+        "Value": "Sharpness"
+    },
+    {
+        "Key": "0000A40B",
+        "Value": "DeviceSettingDescription"
+    },
+    {
+        "Key": "0000A40C",
+        "Value": "SubjectDistanceRange"
+    },
+    {
+        "Key": "0000A420",
+        "Value": "ImageUniqueID"
+    },
+    {
+        "Key": "00000100",
+        "Value": "ImageWidth"
+    },
+    {
+        "Key": "00000101",
+        "Value": "ImageHeight"
+    },
+    {
+        "Key": "00000102",
+        "Value": "BitsPerSample"
+    },
+    {
+        "Key": "00000103",
+        "Value": "Compression"
+    },
+    {
+        "Key": "00000106",
+        "Value": "PhotometricInterpretation"
+    },
+    {
+        "Key": "0000010E",
+        "Value": "ImageDescription"
+    },
+    {
+        "Key": "0000010F",
+        "Value": "Make"
+    },
+    {
+        "Key": "00000110",
+        "Value": "Model"
+    },
+    {
+        "Key": "00000111",
+        "Value": "StripOffsets"
+    },
+    {
+        "Key": "00000112",
+        "Value": "Orientation"
+    },
+    {
+        "Key": "00000115",
+        "Value": "SamplesPerPixel"
+    },
+    {
+        "Key": "00000116",
+        "Value": "RowsPerStrip"
+    },
+    {
+        "Key": "00000117",
+        "Value": "StripByteCounts"
+    },
+    {
+        "Key": "0000011A",
+        "Value": "XResolution"
+    },
+    {
+        "Key": "0000011B",
+        "Value": "YResolution"
+    },
+    {
+        "Key": "0000011C",
+        "Value": "PlanarConfiguration"
+    },
+    {
+        "Key": "00000128",
+        "Value": "ResolutionUnit"
+    },
+    {
+        "Key": "0000012D",
+        "Value": "TransferFunction"
+    },
+    {
+        "Key": "00000131",
+        "Value": "Software"
+    },
+    {
+        "Key": "00000132",
+        "Value": "DateTime"
+    },
+    {
+        "Key": "0000013B",
+        "Value": "Artist"
+    },
+    {
+        "Key": "0000013E",
+        "Value": "WhitePoint"
+    },
+    {
+        "Key": "0000013F",
+        "Value": "PrimaryChromaticities"
+    },
+    {
+        "Key": "00000201",
+        "Value": "JPEGInterchangeFormat"
+    },
+    {
+        "Key": "00000202",
+        "Value": "JPEGInterchangeFormatLength"
+    },
+    {
+        "Key": "00000211",
+        "Value": "YCbCrCoefficients"
+    },
+    {
+        "Key": "00000212",
+        "Value": "YCbCrSubSampling"
+    },
+    {
+        "Key": "00000213",
+        "Value": "YCbCrPositioning"
+    },
+    {
+        "Key": "00000214",
+        "Value": "ReferenceBlackWhite"
+    },
+    {
+        "Key": "00008298",
+        "Value": "Copyright"
+    },
+    {
+        "Key": "00008769",
+        "Value": "ExifIFDPointer"
+    },
+    {
+        "Key": "00008825",
+        "Value": "GPSInfoIFDPointer"
+    },
+    {
+        "Key": "0000A005",
+        "Value": "InteroperabilityIFDPointer"
+    }
+]
