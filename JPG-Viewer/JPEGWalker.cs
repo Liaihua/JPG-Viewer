@@ -185,8 +185,20 @@ namespace JPG_Viewer
                                 BitConverter.ToInt32(valueOrOffset, 0), LittleEndian.Value).ToString();
                     break;
                 case (int)IFDTypeEnum.SRational:
+                    if (count > 1) { }
+                    else
+                    {
+                        reader.BaseStream.Seek(
+                            EndiannessIO.ReadInt32(
+                                BitConverter.ToInt32(valueOrOffset, 0), false) + tiffHeader,
+                            SeekOrigin.Begin);
+                        int numerator = EndiannessIO.ReadInt32(reader.ReadInt32(), LittleEndian.Value);
+                        int denominator = EndiannessIO.ReadInt32(reader.ReadInt32(), LittleEndian.Value);
+                        currentExifTag.TagValue = $"{numerator / (denominator * 1.0)} [{numerator}/{denominator}]";
+                    }
                     break;
             }
+            reader.BaseStream.Seek(tiffHeader, SeekOrigin.Begin);
             return currentExifTag;
         }
 
