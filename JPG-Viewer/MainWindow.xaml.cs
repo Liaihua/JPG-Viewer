@@ -11,11 +11,13 @@ namespace JPG_Viewer
     public partial class MainWindow : Window
     {
         JPEGWalker walker;
+        EXIFViewer viewer;
         public List<string> FoundImages { get; set; }
         public List<string> FoundPaths { get; set; }
         public MainWindow()
         {
             walker = new JPEGWalker();
+            viewer = new EXIFViewer();
             FolderBrowserDialog selectedFolderDialog = new FolderBrowserDialog();
             selectedFolderDialog.ShowDialog();
             FoundImages = walker.FindJPEGInDirectory(selectedFolderDialog.SelectedPath);
@@ -28,7 +30,7 @@ namespace JPG_Viewer
         {
             if (FoundImagesListView.SelectedItem != null)
             {
-                DumpedJPEGTextBlock.Text = walker.ReadExifInFile(FoundImagesListView.SelectedItem.ToString());
+                ExifMetadataListView.ItemsSource = viewer.ReadExifInFile(FoundImagesListView.SelectedItem.ToString());
                 FileLength_Label.Content = $"Размер: { walker.GetFileLength(FoundImagesListView.SelectedItem.ToString())} КБ";
             }
         }

@@ -44,7 +44,16 @@
                 <RowDefinition Height="28px"/>
             </Grid.RowDefinitions>
             <Image Source="{Binding ElementName=FoundImagesListView, Path=SelectedItem}" Grid.Row="0"/>
-            <TextBox x:Name="DumpedJPEGTextBlock" Grid.Row="1" ScrollViewer.HorizontalScrollBarVisibility="Visible"/>
+            <ListView x:Name="ExifMetadataListView" Grid.Row="1">
+                <ListView.View>
+                    <GridView>
+                        <GridView.Columns>
+                            <GridViewColumn Header="Имя свойства"/>
+                            <GridViewColumn Header="Значение"/>
+                        </GridView.Columns>
+                    </GridView>
+                </ListView.View>
+            </ListView>
             <Label Name="FileLength_Label" Grid.Row="2" VerticalAlignment="Stretch"/>
         </Grid>
     </Grid>
