@@ -39,17 +39,13 @@
         </StackPanel>
         <Grid Grid.Column="2" Grid.Row="1">
             <Grid.RowDefinitions>
-                <RowDefinition>
-                    <RowDefinition.Style>
-                        <Style>
-                            <Setter Property="Block.BorderBrush" Value="Black"/>
-                        </Style>
-                    </RowDefinition.Style>
-                </RowDefinition>
                 <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition Height="28px"/>
             </Grid.RowDefinitions>
             <Image Source="{Binding ElementName=FoundImagesListView, Path=SelectedItem}" Grid.Row="0"/>
             <TextBox x:Name="DumpedJPEGTextBlock" Grid.Row="1" ScrollViewer.HorizontalScrollBarVisibility="Visible"/>
+            <Label Name="FileLength_Label" Grid.Row="2" VerticalAlignment="Stretch"/>
         </Grid>
     </Grid>
 </Window>

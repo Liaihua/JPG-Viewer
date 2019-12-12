@@ -1,18 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.IO;
 using System.Windows.Forms;
 
 namespace JPG_Viewer
@@ -32,16 +20,18 @@ namespace JPG_Viewer
             selectedFolderDialog.ShowDialog();
             FoundImages = walker.FindJPEGInDirectory(selectedFolderDialog.SelectedPath);
             FoundPaths = walker.FindAllPathsInDirectory(selectedFolderDialog.SelectedPath);
-            
+
             InitializeComponent();
         }
 
         private void FoundImagesListView_Changed(object sender, SelectionChangedEventArgs e)
         {
             if (FoundImagesListView.SelectedItem != null)
-                DumpedJPEGTextBlock.Text = walker.ReadExifInFile(FoundImagesListView.SelectedItem.ToString()); // "C:\\Users\\vovchenko\\Downloads\\JPEG_example_down.jpg"
+            {
+                DumpedJPEGTextBlock.Text = walker.ReadExifInFile(FoundImagesListView.SelectedItem.ToString());
+                FileLength_Label.Content = $"Размер: { walker.GetFileLength(FoundImagesListView.SelectedItem.ToString())} КБ";
+            }
         }
-
         private void NewWindowMenuItem_Click(object sender, RoutedEventArgs e)
         {
             new MainWindow().Show();

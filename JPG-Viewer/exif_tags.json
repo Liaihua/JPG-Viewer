@@ -16,6 +16,10 @@
         "Value": "SpectralSensitivity"
     },
     {
+        "Key":"00008827",
+        "Value":"PhotographicSensivity"
+    },
+    {
         "Key": "00008828",
         "Value": "OECF"
     },
@@ -354,5 +358,129 @@
     {
         "Key": "0000A005",
         "Value": "InteroperabilityIFDPointer"
+    },
+    {
+        "Key": "00000000",
+        "Value": "GPSVersionID"
+    },
+    {
+        "Key": "00000001",
+        "Value": "GPSLatitudeRef"
+    },
+    {
+        "Key": "00000002",
+        "Value": "GPSLatitude"
+    },
+    {
+        "Key": "00000003",
+        "Value": "GPSLongitudeRef"
+    },
+    {
+        "Key": "00000004",
+        "Value": "GPSLongitude"
+    },
+    {
+        "Key": "00000005",
+        "Value": "GPSAltitudeRef"
+    },
+    {
+        "Key": "00000006",
+        "Value": "GPSAltitude"
+    },
+    {
+        "Key": "00000007",
+        "Value": "GPSTimeStamp"
+    },
+    {
+        "Key": "00000008",
+        "Value": "GPSSatellites"
+    },
+    {
+        "Key": "00000009",
+        "Value": "GPSStatus"
+    },
+    {
+        "Key": "0000000A",
+        "Value": "GPSMeasureMode"
+    },
+    {
+        "Key": "0000000B",
+        "Value": "GPSDOP"
+    },
+    {
+        "Key": "0000000C",
+        "Value": "GPSSpeedRef"
+    },
+    {
+        "Key": "0000000D",
+        "Value": "GPSSpeed"
+    },
+    {
+        "Key": "0000000E",
+        "Value": "GPSTrackRef"
+    },
+    {
+        "Key": "0000000F",
+        "Value": "GPSTrack"
+    },
+    {
+        "Key": "00000010",
+        "Value": "GPSImgDirectionRef"
+    },
+    {
+        "Key": "00000011",
+        "Value": "GPSImgDirection"
+    },
+    {
+        "Key": "00000012",
+        "Value": "GPSMapDatum"
+    },
+    {
+        "Key": "00000013",
+        "Value": "GPSDestLatitudeRef"
+    },
+    {
+        "Key": "00000014",
+        "Value": "GPSDestLatitude"
+    },
+    {
+        "Key": "00000015",
+        "Value": "GPSDestLongitudeRef"
+    },
+    {
+        "Key": "00000016",
+        "Value": "GPSDestLongitude"
+    },
+    {
+        "Key": "00000017",
+        "Value": "GPSDestBearingRef"
+    },
+    {
+        "Key": "00000018",
+        "Value": "GPSDestBearing"
+    },
+    {
+        "Key": "00000019",
+        "Value": "GPSDestDistanceRef"
+    },
+    {
+        "Key": "0000001A",
+        "Value": "GPSDestDistance"
+    },
+    {
+        "Key": "0000001B",
+        "Value": "GPSProcessingMethod"
+    },
+    {
+        "Key": "0000001C",
+        "Value": "GPSAreaInformation"
+    },
+    {
+        "Key": "0000001D",
+        "Value": "GPSDateStamp"
+    },
+    {
+        "Key": "0000001E",
+        "Value": "GPSDifferential"
     }
 ]

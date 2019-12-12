@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace JPG_Viewer
+﻿namespace JPG_Viewer
 {
     class ExifTag
     {
+        public ushort Tag { get; }
         public string TagDescription { get; }
         public string TagValue { get; set; }
-        
-        public ExifTag(string tagDescription, string tagValue)
+
+        public ExifTag(ushort tag, string tagDescription, string tagValue)
         {
+            Tag = tag;
             TagValue = tagValue;
             TagDescription = tagDescription;
         }
