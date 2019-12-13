@@ -6,6 +6,31 @@
         xmlns:local="clr-namespace:JPG_Viewer"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800" WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <Style TargetType="Menu">
+            <Style.Setters>
+                <Setter Property="Background" Value="Azure"/>
+            </Style.Setters>
+        </Style>
+        <Style TargetType="ListView">
+            <Style.Setters>
+                <Setter Property="Background" Value="AliceBlue"/>
+                <Setter Property="BorderBrush" Value="White"/>
+            </Style.Setters>
+        </Style>
+        <Style TargetType="TreeView">
+            <Style.Setters>
+                <Setter Property="Background" Value="AliceBlue"/>
+                <Setter Property="BorderBrush" Value="White"/>
+            </Style.Setters>
+        </Style>
+        <Style TargetType="Grid">
+            <Setter Property="Background" Value="AliceBlue"/>
+        </Style>
+        <!--
+        -->
+
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="24px"/>
@@ -18,25 +43,56 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
 
-        <Menu Grid.ColumnSpan="3" Grid.Row="0" VerticalAlignment="Stretch">
+        <Menu Grid.ColumnSpan="3" Grid.Row="0" VerticalAlignment="Center" Padding="2">
             <MenuItem Header="Главная" VerticalAlignment="Center">
                 <MenuItem Header="Новое окно" Click="NewWindowMenuItem_Click"/>
             </MenuItem>
+            <!-- 
+                Если мы находимся внутри какой-то папки, то по
+                нажатию отображаются файлы, помеченные как "избранные".
+                Иначе, мы возвращаемся в папку, из которой пришли
+            -->
+            <MenuItem Name="ChangeDirectoryToFavorites_MenuItem" Header="Избранное"/>
         </Menu>
 
         <TreeView x:Name="DirectoriesTreeView" Grid.Column="0" Grid.Row="1" ItemsSource="{Binding FoundPaths, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"/>
-        <StackPanel Orientation="Vertical" Grid.Column="1" Grid.Row="1">
-            <ListView x:Name="FoundImagesListView" Grid.Column="1" Grid.Row="1" SelectionChanged="FoundImagesListView_Changed" ItemsSource="{Binding FoundImages, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}">
-                <ListView.View>
-                    <GridView>
-                        <GridView.Columns>
-                            <GridViewColumn Header="Имя файла"/>
-                            <GridViewColumn Header="Блабла"/>
-                        </GridView.Columns>
-                    </GridView>
-                </ListView.View>
-            </ListView>
-        </StackPanel>
+
+        <ListView x:Name="FoundImagesListView" VerticalAlignment="Stretch" Grid.Column="1" Grid.Row="1" SelectionChanged="FoundImagesListView_Changed" ItemsSource="{Binding FoundImages, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" BorderThickness="1">
+            <ListView.View>
+                <GridView>
+                    <GridView.Columns>
+                        <GridViewColumn Header="Имя файла"/>
+                        <GridViewColumn Header="Размер"/>
+                        <GridViewColumn Header="Имя устройства"/>
+                        <GridViewColumn Header="Дата создания"/>
+
+                    </GridView.Columns>
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <!--
+        <DataGrid x:Name="FoundImagesDataGrid" ItemsSource="{Binding FoundImages}" CanUserAddRows="False" CanUserDeleteRows="False" 
+                  VerticalAlignment="Stretch" Grid.Column="1" Grid.Row="1" SelectionChanged="FoundImagesListView_Changed" BorderThickness="1">
+            <DataGrid.Columns>
+                <DataGridTemplateColumn Header="Имя файла">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding FoundImages}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="Размер"/>
+                <DataGridTextColumn Header="Имя устройства"/>
+                <DataGridTextColumn Header="Дата создания"/>
+            </DataGrid.Columns>
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="В избранное"/>
+                </ContextMenu>
+            </DataGrid.ContextMenu>
+        </DataGrid>
+        -->
+
         <Grid Grid.Column="2" Grid.Row="1">
             <Grid.RowDefinitions>
                 <RowDefinition/>
@@ -48,8 +104,20 @@
                 <ListView.View>
                     <GridView>
                         <GridView.Columns>
-                            <GridViewColumn Header="Имя свойства"/>
-                            <GridViewColumn Header="Значение"/>
+                            <GridViewColumn Header="Имя свойства">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding TagDescription}"/>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Header="Значение">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding TagValue}"/>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
                         </GridView.Columns>
                     </GridView>
                 </ListView.View>

@@ -118,7 +118,7 @@ namespace JPG_Viewer
                     {
                         uint numerator = EndiannessIO.ReadUInt32(reader.ReadUInt32(), LittleEndian.Value);
                         uint denominator = EndiannessIO.ReadUInt32(reader.ReadUInt32(), LittleEndian.Value);
-                        currentExifTag.TagValue += $"{numerator / (denominator * 1.0)} [{numerator}/{denominator}]\n";
+                        currentExifTag.TagValue += $"{numerator / (denominator * 1.0)} [{numerator}/{denominator}] ";
                     }
                     break;
 
@@ -145,7 +145,7 @@ namespace JPG_Viewer
                     {
                         int numerator = EndiannessIO.ReadInt32(reader.ReadInt32(), LittleEndian.Value);
                         int denominator = EndiannessIO.ReadInt32(reader.ReadInt32(), LittleEndian.Value);
-                        currentExifTag.TagValue += $"{numerator / (denominator * 1.0)} [{numerator}/{denominator}]\n";
+                        currentExifTag.TagValue += $"{numerator / (denominator * 1.0)} [{numerator}/{denominator}] ";
                     }
                     break;
 
