@@ -16,10 +16,10 @@ namespace JPG_Viewer
         public List<string> FoundPaths { get; set; }
         public MainWindow()
         {
-            walker = new JPEGWalker();
-            viewer = new EXIFViewer();
             FolderBrowserDialog selectedFolderDialog = new FolderBrowserDialog();
             selectedFolderDialog.ShowDialog();
+            walker = new JPEGWalker(selectedFolderDialog.SelectedPath);
+            viewer = new EXIFViewer();
             FoundImages = walker.FindJPEGInDirectory(selectedFolderDialog.SelectedPath);
             FoundPaths = walker.FindAllPathsInDirectory(selectedFolderDialog.SelectedPath);
 
