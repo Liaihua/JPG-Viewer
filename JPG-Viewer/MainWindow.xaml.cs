@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
@@ -12,32 +13,39 @@ namespace JPG_Viewer
     {
         JPEGWalker walker;
         EXIFViewer viewer;
-        public List<string> FoundImages { get; set; }
-        public List<string> FoundPaths { get; set; }
+        public ObservableCollection<string> FoundImages { get; set; }
+        public string CurrentDirectory { get; set; }
+        DirectoryViewModel directoryViewModel { get; set; }
         public MainWindow()
         {
             FolderBrowserDialog selectedFolderDialog = new FolderBrowserDialog();
             selectedFolderDialog.ShowDialog();
-            walker = new JPEGWalker(selectedFolderDialog.SelectedPath);
-            viewer = new EXIFViewer();
-            FoundImages = walker.FindJPEGInDirectory(selectedFolderDialog.SelectedPath);
-            FoundPaths = walker.FindAllPathsInDirectory(selectedFolderDialog.SelectedPath);
-
+            directoryViewModel = new DirectoryViewModel(selectedFolderDialog.SelectedPath);
             InitializeComponent();
         }
 
-        private void FoundImagesListView_Changed(object sender, SelectionChangedEventArgs e)
-        {
-            if (FoundImagesListView.SelectedItem != null)
-            {
-                ExifMetadataListView.ItemsSource = viewer.ReadExifInFile(FoundImagesListView.SelectedItem.ToString());
-                FileLength_Label.Content = $"Размер: { walker.GetFileLength(FoundImagesListView.SelectedItem.ToString())} КБ";
-            }
-        }
         private void NewWindowMenuItem_Click(object sender, RoutedEventArgs e)
         {
             new MainWindow().Show();
             Close();
+        }
+
+        private void FoundImagesListView_Changed(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (FoundImagesListView.SelectedItem != null)
+            {
+                if (FoundImagesListView.SelectedItem.ToString().EndsWith(".jpg") ||
+                    FoundImagesListView.SelectedItem.ToString().EndsWith(".jpeg"))
+                {
+                    ExifMetadataListView.ItemsSource = viewer.ReadExifInFile(FoundImagesListView.SelectedItem.ToString());
+                    FileLength_Label.Content = $"Размер: { walker.GetFileLength(FoundImagesListView.SelectedItem.ToString())} КБ";
+                }
+                else
+                {
+                    FoundImages = new ObservableCollection<string>(walker.ListJPEGAndDirsInDirectory(FoundImagesListView.SelectedItem.ToString()));
+                    CurrentDirectory = walker.GetCurrentDirectory();
+                }
+            }
         }
     }
 }

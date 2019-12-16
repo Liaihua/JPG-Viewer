@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:JPG_Viewer"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" WindowStartupLocation="CenterScreen">
+        Title="JPGViewer" Height="450" Width="800" WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <Style TargetType="Menu">
             <Style.Setters>
@@ -34,11 +34,11 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="24px"/>
+            <RowDefinition Height="24px"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="140"/>
             <ColumnDefinition/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
@@ -54,10 +54,8 @@
             -->
             <MenuItem Name="ChangeDirectoryToFavorites_MenuItem" Header="Избранное"/>
         </Menu>
-
-        <TreeView x:Name="DirectoriesTreeView" Grid.Column="0" Grid.Row="1" ItemsSource="{Binding FoundPaths, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"/>
-
-        <ListView x:Name="FoundImagesListView" VerticalAlignment="Stretch" Grid.Column="1" Grid.Row="1" SelectionChanged="FoundImagesListView_Changed" ItemsSource="{Binding FoundImages, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" BorderThickness="1">
+        <TextBlock Grid.Row="1" Grid.Column="0" Text="{Binding CurrentDirectory}"/>
+        <ListView x:Name="FoundImagesListView" VerticalAlignment="Stretch" Grid.Column="0" Grid.Row="2" MouseDoubleClick="FoundImagesListView_Changed" ItemsSource="{Binding FoundImages, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" BorderThickness="1">
             <ListView.View>
                 <GridView>
                     <GridView.Columns>
@@ -93,7 +91,7 @@
         </DataGrid>
         -->
 
-        <Grid Grid.Column="2" Grid.Row="1">
+        <Grid Grid.Column="2" Grid.Row="1" Grid.RowSpan="2">
             <Grid.RowDefinitions>
                 <RowDefinition/>
                 <RowDefinition/>
