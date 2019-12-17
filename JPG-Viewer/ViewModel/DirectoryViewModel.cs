@@ -30,6 +30,7 @@ namespace JPG_Viewer
                 FoundImages.Clear();
                 foreach (string d in walker.ListJPEGAndDirsInDirectory(dir))
                     FoundImages.Add(d);
+                CurrentDirectory = walker.GetCurrentDirectory();
             });
         }
 

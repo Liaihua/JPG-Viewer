@@ -25,6 +25,7 @@ namespace JPG_Viewer
             viewer = new EXIFViewer();
             InitializeComponent();
             FoundImagesListView.DataContext = directoryViewModel;
+            CurrentDirectoryTextBlock.Text = directoryViewModel.CurrentDirectory;
         }
 
         private void NewWindowMenuItem_Click(object sender, RoutedEventArgs e)
@@ -46,9 +47,17 @@ namespace JPG_Viewer
                 else
                 {
                     directoryViewModel.UpdateDirectioryCommand.Execute(FoundImagesListView.SelectedItem.ToString());
-                    CurrentDirectory = walker.GetCurrentDirectory();
+                    CurrentDirectoryTextBlock.Text = directoryViewModel.CurrentDirectory;
                 }
             }
+        }
+
+        private void ChangeDirectoryToFavorites_MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (FoundImagesListView.DataContext.GetType() == typeof(DirectoryViewModel))
+                FoundImagesListView.DataContext = new FavoritesViewModel();
+            else
+                FoundImagesListView.DataContext = directoryViewModel;
         }
     }
 }

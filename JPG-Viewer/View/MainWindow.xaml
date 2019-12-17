@@ -52,22 +52,28 @@
                 нажатию отображаются файлы, помеченные как "избранные".
                 Иначе, мы возвращаемся в папку, из которой пришли
             -->
-            <MenuItem Name="ChangeDirectoryToFavorites_MenuItem" Header="Избранное"/>
+            <MenuItem Name="ChangeDirectoryToFavorites_MenuItem" Header="Избранное" Click="ChangeDirectoryToFavorites_MenuItem_Click"/>
         </Menu>
-        <TextBlock Grid.Row="1" Grid.Column="0" Text="{Binding CurrentDirectory}"/>
-        <ListView x:Name="FoundImagesListView" VerticalAlignment="Stretch" Grid.Column="0" Grid.Row="2" MouseDoubleClick="FoundImagesListView_Changed" ItemsSource="{Binding FoundImages}" BorderThickness="1">
-            <ListView.View>
-                <GridView>
-                    <GridView.Columns>
-                        <GridViewColumn Header="Имя файла"/>
-                        <GridViewColumn Header="Размер"/>
-                        <GridViewColumn Header="Имя устройства"/>
-                        <GridViewColumn Header="Дата создания"/>
+        <Grid Grid.Column="0" Grid.Row="1" Grid.RowSpan="2" DataContext="{Binding directoryViewModel}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="24px"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <TextBlock x:Name="CurrentDirectoryTextBlock" Grid.Row="1" Grid.Column="0" Text="{Binding CurrentDirectory}"/>
+            <ListView x:Name="FoundImagesListView" VerticalAlignment="Stretch" Grid.Column="0" Grid.Row="2" MouseDoubleClick="FoundImagesListView_Changed" ItemsSource="{Binding FoundImages}" BorderThickness="1">
+                <ListView.View>
+                    <GridView>
+                        <GridView.Columns>
+                            <GridViewColumn Header="Имя файла"/>
+                            <GridViewColumn Header="Размер"/>
+                            <GridViewColumn Header="Имя устройства"/>
+                            <GridViewColumn Header="Дата создания"/>
 
-                    </GridView.Columns>
-                </GridView>
-            </ListView.View>
-        </ListView>
+                        </GridView.Columns>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </Grid>
         <!--
         <DataGrid x:Name="FoundImagesDataGrid" ItemsSource="{Binding FoundImages}" CanUserAddRows="False" CanUserDeleteRows="False" 
                   VerticalAlignment="Stretch" Grid.Column="1" Grid.Row="1" SelectionChanged="FoundImagesListView_Changed" BorderThickness="1">
