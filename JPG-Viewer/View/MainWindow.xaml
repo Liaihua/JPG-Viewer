@@ -55,7 +55,7 @@
             <MenuItem Name="ChangeDirectoryToFavorites_MenuItem" Header="Избранное"/>
         </Menu>
         <TextBlock Grid.Row="1" Grid.Column="0" Text="{Binding CurrentDirectory}"/>
-        <ListView x:Name="FoundImagesListView" VerticalAlignment="Stretch" Grid.Column="0" Grid.Row="2" MouseDoubleClick="FoundImagesListView_Changed" ItemsSource="{Binding FoundImages, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" BorderThickness="1">
+        <ListView x:Name="FoundImagesListView" VerticalAlignment="Stretch" Grid.Column="0" Grid.Row="2" MouseDoubleClick="FoundImagesListView_Changed" ItemsSource="{Binding FoundImages}" BorderThickness="1">
             <ListView.View>
                 <GridView>
                     <GridView.Columns>

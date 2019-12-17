@@ -83,10 +83,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="DirectoryViewModel.cs" />
-    <Compile Include="ImageModel.cs" />
-    <Compile Include="SQLiteImageInformationModel.cs" />
-    <Page Include="MainWindow.xaml">
+    <Compile Include="ViewModel\CustomCommand.cs" />
+    <Compile Include="ViewModel\DirectoryViewModel.cs" />
+    <Compile Include="ViewModel\FavoritesViewModel.cs" />
+    <Compile Include="Model\ImageModel.cs" />
+    <Compile Include="Model\SQLiteImageInformationModel.cs" />
+    <Page Include="View\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -94,12 +96,12 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="EndiannessIO.cs" />
-    <Compile Include="ExifTag.cs" />
-    <Compile Include="JPEGWalker.cs" />
-    <Compile Include="ImageMetadataEnums.cs" />
-    <Compile Include="EXIFViewer.cs" />
-    <Compile Include="MainWindow.xaml.cs">
+    <Compile Include="Model\EndiannessIO.cs" />
+    <Compile Include="Model\ExifTag.cs" />
+    <Compile Include="Model\JPEGWalker.cs" />
+    <Compile Include="Model\ImageMetadataEnums.cs" />
+    <Compile Include="Model\EXIFViewer.cs" />
+    <Compile Include="View\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>

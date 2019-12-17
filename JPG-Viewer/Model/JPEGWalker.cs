@@ -52,7 +52,7 @@ namespace JPG_Viewer
             if (dir == "..")
                 try
                 {
-                    return FindJPEGInDirectory(directoryInfo.Parent.FullName);
+                    return FindAllPathsInDirectory(directoryInfo.Parent.FullName);
                 }
                 catch (NullReferenceException)
                 { System.Windows.MessageBox.Show("Вы в корневой директории"); }

@@ -21,7 +21,10 @@ namespace JPG_Viewer
             FolderBrowserDialog selectedFolderDialog = new FolderBrowserDialog();
             selectedFolderDialog.ShowDialog();
             directoryViewModel = new DirectoryViewModel(selectedFolderDialog.SelectedPath);
+            walker = new JPEGWalker(selectedFolderDialog.SelectedPath);
+            viewer = new EXIFViewer();
             InitializeComponent();
+            FoundImagesListView.DataContext = directoryViewModel;
         }
 
         private void NewWindowMenuItem_Click(object sender, RoutedEventArgs e)
@@ -42,7 +45,7 @@ namespace JPG_Viewer
                 }
                 else
                 {
-                    FoundImages = new ObservableCollection<string>(walker.ListJPEGAndDirsInDirectory(FoundImagesListView.SelectedItem.ToString()));
+                    directoryViewModel.UpdateDirectioryCommand.Execute(FoundImagesListView.SelectedItem.ToString());
                     CurrentDirectory = walker.GetCurrentDirectory();
                 }
             }
