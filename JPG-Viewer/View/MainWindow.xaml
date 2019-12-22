@@ -52,7 +52,7 @@
                 нажатию отображаются файлы, помеченные как "избранные".
                 Иначе, мы возвращаемся в папку, из которой пришли
             -->
-            <MenuItem Name="ChangeDirectoryToFavorites_MenuItem" Header="Избранное" Click="ChangeDirectoryToFavorites_MenuItem_Click"/>
+            <!-- <MenuItem Name="ChangeDirectoryToFavorites_MenuItem" Header="Избранное" Click="ChangeDirectoryToFavorites_MenuItem_Click"/> -->
         </Menu>
         <Grid Grid.Column="0" Grid.Row="1" Grid.RowSpan="2" DataContext="{Binding directoryViewModel}">
             <Grid.RowDefinitions>
@@ -64,28 +64,40 @@
                 <ListView.View>
                     <GridView>
                         <GridView.Columns>
-                            <GridViewColumn Header="Имя файла">
+                            <GridViewColumn>
+                                <GridViewColumn.Header>
+                                    <GridViewColumnHeader Name="Name" Click="FoundImagesGridViewColumn_Click">Имя файла</GridViewColumnHeader>
+                                </GridViewColumn.Header>
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding Name}"/>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
-                            <GridViewColumn Header="Размер, КБ">
+                            <GridViewColumn>
+                                <GridViewColumn.Header>
+                                    <GridViewColumnHeader Name="Size" Click="FoundImagesGridViewColumn_Click">Размер, КБ</GridViewColumnHeader>
+                                </GridViewColumn.Header>
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding Size}"/>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
-                            <GridViewColumn Header="Имя устройства">
+                            <GridViewColumn>
+                                <GridViewColumn.Header>
+                                    <GridViewColumnHeader Name="DeviceName" Click="FoundImagesGridViewColumn_Click">Имя устройства</GridViewColumnHeader>
+                                </GridViewColumn.Header>
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding DeviceName}"/>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
-                            <GridViewColumn Header="Дата создания">
+                            <GridViewColumn>
+                                <GridViewColumn.Header>
+                                    <GridViewColumnHeader Name="WhenShot" Click="FoundImagesGridViewColumn_Click">Дата создания</GridViewColumnHeader>
+                                </GridViewColumn.Header>
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding WhenShot}"/>

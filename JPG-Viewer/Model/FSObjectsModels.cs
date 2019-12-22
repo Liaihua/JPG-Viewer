@@ -9,22 +9,26 @@ namespace JPG_Viewer.Model
 {
     public class ImageModel : AbstractFSObject
     {
-        long Size { get; }
-        DateTime WhenShot { get; }
-        string DeviceName { get; }
-        string Artist { get; }
+        public long Size { get; }
+        public string WhenShot { get; }
+        public string DeviceName { get; }
+        //public string Artist { get; }
         public ImageModel(string pathname)
         {
             Name = pathname;
             Size = new FileInfo(pathname).Length / 1024;
             //Может, пусть этим занимается DirectoryViewModel?
-            //availableTags = new EXIFViewer().ReadExifInFile(pathname);
-            //WhenShot = DateTime.Parse(availableTags.First(tag => tag.TagDescription == "DateTime").TagValue);
-            //DeviceName = availableTags.First(tag => tag.TagDescription == "Model").TagValue;
-            //Artist = availableTags.First(tag => tag.TagDescription == "Artist").TagValue;
+            try
+            {
+                List<ExifTag> availableTags = new EXIFViewer().ReadExifInFile(pathname);
+                WhenShot = availableTags.First(tag => tag.TagDescription == "DateTime").TagValue;
+                DeviceName = availableTags.First(tag => tag.TagDescription == "Model").TagValue;
+                //Artist = availableTags.First(tag => tag.TagDescription == "Artist").TagValue;
+            }
+            catch { WhenShot = ""; DeviceName = ""; }
         }
     }
-    
+
     public class DirectoryModel : AbstractFSObject
     {
         public DirectoryModel() : base()

@@ -41,7 +41,7 @@ namespace JPG_Viewer
             byte[] valueOrOffset = BitConverter.GetBytes(EndiannessIO.ReadUInt32(reader.ReadUInt32(), !LittleEndian.Value));
             ExifTag currentExifTag = LoadedExifTags.Any((pair) => { return pair.Key == tag; }) ? 
                     new ExifTag(tag, LoadedExifTags.First(item => item.Key == tag).Value, "") :
-                    new ExifTag(tag, "Unknown Tag", "");
+                    new ExifTag(tag, $"Unknown Tag: {tag:X}", "");
 
             switch (type)
             {
@@ -209,7 +209,6 @@ namespace JPG_Viewer
                     foundTags.Add(ReadTag(reader, tiffPosition, 2 + gpsPointerPosition + i * 12));
                 }
             }
-
             return foundTags;
         }
 

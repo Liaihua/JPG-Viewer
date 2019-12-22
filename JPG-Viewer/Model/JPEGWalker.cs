@@ -88,7 +88,6 @@ namespace JPG_Viewer
             {
                 foreach (var d in directoryInfo.GetDirectories("*", SearchOption.TopDirectoryOnly))
                 {
-                    //if (FindJPEGInDirectory(d.FullName).Count > 0)
                     Dirs.Add(new DirectoryModel { Name = d.Name });
                 }
             }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
@@ -15,6 +16,8 @@ namespace JPG_Viewer
         EXIFViewer viewer;
         public string CurrentDirectory { get; set; }
         DirectoryViewModel directoryViewModel { get; set; }
+        GridViewColumnHeader sortedColumnHeader = null;
+        ListSortDirection direction = ListSortDirection.Ascending;
         public MainWindow()
         {
             FolderBrowserDialog selectedFolderDialog = new FolderBrowserDialog();
@@ -24,7 +27,6 @@ namespace JPG_Viewer
             viewer = new EXIFViewer();
             InitializeComponent();
             FoundImagesListView.DataContext = directoryViewModel;
-            
         }
 
         private void NewWindowMenuItem_Click(object sender, RoutedEventArgs e)
@@ -46,18 +48,18 @@ namespace JPG_Viewer
                 else
                 {
                     directoryViewModel.UpdateDirectioryCommand.Execute(FoundImagesListView.SelectedItem);
-                    
+
                 }
             }
         }
 
-        private void ChangeDirectoryToFavorites_MenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            if (FoundImagesListView.DataContext.GetType() == typeof(DirectoryViewModel))
-                FoundImagesListView.DataContext = new FavoritesViewModel();
-            else
-                FoundImagesListView.DataContext = directoryViewModel;
-        }
+        //private void ChangeDirectoryToFavorites_MenuItem_Click(object sender, RoutedEventArgs e)
+        //{
+        //    if (FoundImagesListView.DataContext.GetType() == typeof(DirectoryViewModel))
+        //        FoundImagesListView.DataContext = new FavoritesViewModel();
+        //    else
+        //        FoundImagesListView.DataContext = directoryViewModel;
+        //}
 
         private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -74,6 +76,19 @@ namespace JPG_Viewer
                 else
                     FoundImagesListView.ItemsSource = directoryViewModel.FoundImagesAndDirs;
             }
+        }
+
+        private void FoundImagesGridViewColumn_Click(object sender, RoutedEventArgs e)
+        {
+            GridViewColumnHeader header = sender as GridViewColumnHeader;
+            if (sortedColumnHeader != null)
+            {
+                FoundImagesListView.Items.SortDescriptions.Clear();
+            }
+            ListSortDirection currentDirection = (sortedColumnHeader == header && direction == ListSortDirection.Ascending) ? ListSortDirection.Descending : ListSortDirection.Ascending;
+            sortedColumnHeader = header;
+            direction = currentDirection;
+            FoundImagesListView.Items.SortDescriptions.Add(new SortDescription(header.Name, currentDirection));
         }
     }
 }
