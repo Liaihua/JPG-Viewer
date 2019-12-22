@@ -13,7 +13,6 @@ namespace JPG_Viewer
     {
         JPEGWalker walker;
         EXIFViewer viewer;
-        public ObservableCollection<string> FoundImages { get; set; }
         public string CurrentDirectory { get; set; }
         DirectoryViewModel directoryViewModel { get; set; }
         public MainWindow()
@@ -25,7 +24,7 @@ namespace JPG_Viewer
             viewer = new EXIFViewer();
             InitializeComponent();
             FoundImagesListView.DataContext = directoryViewModel;
-            CurrentDirectoryTextBlock.Text = directoryViewModel.CurrentDirectory;
+            
         }
 
         private void NewWindowMenuItem_Click(object sender, RoutedEventArgs e)
@@ -38,16 +37,16 @@ namespace JPG_Viewer
         {
             if (FoundImagesListView.SelectedItem != null)
             {
-                if (FoundImagesListView.SelectedItem.ToString().EndsWith(".jpg") ||
-                    FoundImagesListView.SelectedItem.ToString().EndsWith(".jpeg"))
+                if (FoundImagesListView.SelectedItem is Model.ImageModel)
                 {
-                    ExifMetadataListView.ItemsSource = viewer.ReadExifInFile(FoundImagesListView.SelectedItem.ToString());
-                    FileLength_Label.Content = $"Размер: { walker.GetFileLength(FoundImagesListView.SelectedItem.ToString())} КБ";
+                    Model.ImageModel selectedImage = FoundImagesListView.SelectedItem as Model.ImageModel;
+                    ExifMetadataListView.ItemsSource = viewer.ReadExifInFile(selectedImage.Name);
+                    FileLength_Label.Content = $"Размер: { walker.GetFileLength(selectedImage.Name)} КБ";
                 }
                 else
                 {
-                    directoryViewModel.UpdateDirectioryCommand.Execute(FoundImagesListView.SelectedItem.ToString());
-                    CurrentDirectoryTextBlock.Text = directoryViewModel.CurrentDirectory;
+                    directoryViewModel.UpdateDirectioryCommand.Execute(FoundImagesListView.SelectedItem);
+                    
                 }
             }
         }
@@ -58,6 +57,23 @@ namespace JPG_Viewer
                 FoundImagesListView.DataContext = new FavoritesViewModel();
             else
                 FoundImagesListView.DataContext = directoryViewModel;
+        }
+
+        private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (FoundImagesListView.DataContext.GetType() == typeof(DirectoryViewModel))
+            {
+                if (string.IsNullOrWhiteSpace(SearchTextBox.Text))
+                {
+                    FoundImagesListView.ItemsSource = directoryViewModel.FoundImagesAndDirs;
+                    return;
+                }
+                directoryViewModel.SearchImagesCommand.Execute(SearchTextBox.Text);
+                if (directoryViewModel.SearchedImages.Count > 0)
+                    FoundImagesListView.ItemsSource = directoryViewModel.SearchedImages;
+                else
+                    FoundImagesListView.ItemsSource = directoryViewModel.FoundImagesAndDirs;
+            }
         }
     }
 }

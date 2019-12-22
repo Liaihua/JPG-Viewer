@@ -59,15 +59,39 @@
                 <RowDefinition Height="24px"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
-            <TextBlock x:Name="CurrentDirectoryTextBlock" Grid.Row="1" Grid.Column="0" Text="{Binding CurrentDirectory}"/>
-            <ListView x:Name="FoundImagesListView" VerticalAlignment="Stretch" Grid.Column="0" Grid.Row="2" MouseDoubleClick="FoundImagesListView_Changed" ItemsSource="{Binding FoundImages}" BorderThickness="1">
+            <TextBox x:Name="SearchTextBox" TextChanged="SearchTextBox_TextChanged"/> <!-- Здесь будет поиск файлов внутри текущей папки (если что, можно присвоить другой ItemsSource) -->
+            <ListView x:Name="FoundImagesListView" VerticalAlignment="Stretch" Grid.Column="0" Grid.Row="2" MouseDoubleClick="FoundImagesListView_Changed" ItemsSource="{Binding FoundImagesAndDirs}" BorderThickness="1">
                 <ListView.View>
                     <GridView>
                         <GridView.Columns>
-                            <GridViewColumn Header="Имя файла"/>
-                            <GridViewColumn Header="Размер"/>
-                            <GridViewColumn Header="Имя устройства"/>
-                            <GridViewColumn Header="Дата создания"/>
+                            <GridViewColumn Header="Имя файла">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Name}"/>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Header="Размер, КБ">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Size}"/>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Header="Имя устройства">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding DeviceName}"/>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Header="Дата создания">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding WhenShot}"/>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
 
                         </GridView.Columns>
                     </GridView>
@@ -103,7 +127,7 @@
                 <RowDefinition/>
                 <RowDefinition Height="28px"/>
             </Grid.RowDefinitions>
-            <Image Source="{Binding ElementName=FoundImagesListView, Path=SelectedItem}" Grid.Row="0"/>
+            <Image Source="{Binding ElementName=FoundImagesListView, Path=SelectedItem.Name}" Grid.Row="0"/>
             <ListView x:Name="ExifMetadataListView" Grid.Row="1">
                 <ListView.View>
                     <GridView>

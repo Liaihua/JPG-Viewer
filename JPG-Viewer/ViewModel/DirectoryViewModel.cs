@@ -14,23 +14,30 @@ namespace JPG_Viewer
         EXIFViewer viewer;
         private string currentDir;
 
-        public ViewModel.CustomCommand<string> UpdateDirectioryCommand;
-        public ObservableCollection<string> FoundImages { get; set; }
+        public ViewModel.CustomCommand<Model.DirectoryModel> UpdateDirectioryCommand;
+        public ViewModel.CustomCommand<string> SearchImagesCommand;
+        public ObservableCollection<Model.AbstractFSObject> FoundImagesAndDirs { get; set; }
+        public ObservableCollection<Model.ImageModel> SearchedImages { get; set; }
         public string CurrentDirectory { get { return currentDir; } set { currentDir = value; OnPropertyChanged(nameof(CurrentDirectory)); } }
 
         public DirectoryViewModel(string path)
         {
             walker = new JPEGWalker(path);
             viewer = new EXIFViewer();
-            FoundImages = new ObservableCollection<string>(walker.JPEGImagePaths);
+            FoundImagesAndDirs = new ObservableCollection<Model.AbstractFSObject>(walker.JPEGImagePaths);
             CurrentDirectory = walker.GetCurrentDirectory();
-
-            UpdateDirectioryCommand = new ViewModel.CustomCommand<string>((dir) =>
+            SearchedImages = new ObservableCollection<Model.ImageModel>();
+            UpdateDirectioryCommand = new ViewModel.CustomCommand<Model.DirectoryModel>((dir) =>
             {
-                FoundImages.Clear();
-                foreach (string d in walker.ListJPEGAndDirsInDirectory(dir))
-                    FoundImages.Add(d);
+                FoundImagesAndDirs.Clear();
+                foreach (var d in walker.ListJPEGAndDirsInDirectory(CurrentDirectory + "\\" + dir.Name))
+                    FoundImagesAndDirs.Add(d);
                 CurrentDirectory = walker.GetCurrentDirectory();
+            });
+            SearchImagesCommand = new ViewModel.CustomCommand<string>((param) =>
+            {
+                SearchedImages.Clear();
+                SearchedImages = new ObservableCollection<Model.ImageModel>(walker.SearchJPEGInsideDirectory(CurrentDirectory, param));
             });
         }
 

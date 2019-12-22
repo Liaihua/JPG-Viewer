@@ -16,12 +16,20 @@
         "Value": "SpectralSensitivity"
     },
     {
-        "Key":"00008827",
+        "Key": "00008827",
         "Value":"PhotographicSensivity"
     },
     {
         "Key": "00008828",
         "Value": "OECF"
+    },
+    {
+        "Key": "00008830",
+        "Value": "SensitivityType"
+    },
+    {
+        "Key": "00008832",
+        "Value": "RecommendedExposureIndex"
     },
     {
         "Key": "00008833",
@@ -226,6 +234,14 @@
     {
         "Key": "0000A420",
         "Value": "ImageUniqueID"
+    },
+    {
+        "Key": "0000A430",
+        "Value": "CameraOwnerName"
+    },
+    {
+        "Key": "0000A431",
+        "Value": "BodySerialNumber"
     },
     {
         "Key": "00000100",

@@ -39,8 +39,9 @@ namespace JPG_Viewer
             ushort type = EndiannessIO.ReadUInt16(reader.ReadUInt16(), LittleEndian.Value);
             uint count = EndiannessIO.ReadUInt32(reader.ReadUInt32(), LittleEndian.Value);
             byte[] valueOrOffset = BitConverter.GetBytes(EndiannessIO.ReadUInt32(reader.ReadUInt32(), !LittleEndian.Value));
-            ExifTag currentExifTag = new ExifTag(tag,
-                    LoadedExifTags.First(item => item.Key == tag).Value, "");
+            ExifTag currentExifTag = LoadedExifTags.Any((pair) => { return pair.Key == tag; }) ? 
+                    new ExifTag(tag, LoadedExifTags.First(item => item.Key == tag).Value, "") :
+                    new ExifTag(tag, "Unknown Tag", "");
 
             switch (type)
             {
@@ -246,7 +247,7 @@ namespace JPG_Viewer
                             if (mark == 0xDB || // DQT
                                 mark == 0xC0 || // SOF
                                 mark == 0xC4 || // DHT
-                                mark == 0xDA)    // SOS
+                                mark == 0xDA)   // SOS
                                 kindaExif = null;
                             offset += 2 + EndiannessIO.ReadUInt16(reader.ReadUInt16(), false);
                         }
@@ -258,8 +259,17 @@ namespace JPG_Viewer
         public Dictionary<int, string> GetExifTagsFromDictionary()
         {
             Dictionary<int, string> exifTags = new Dictionary<int, string>();
+            
+            if (!File.Exists("exif_tags.json"))
+            {
+                using (FileStream fs = new FileStream("exif_tags.json", FileMode.Create, FileAccess.Write))
+                    using (StreamWriter writer = new StreamWriter(fs))
+                        writer.Write(Properties.Resources.exif_tags);
+            }
+            
             using (FileStream fs = new FileStream("exif_tags.json", FileMode.Open, FileAccess.Read))
             {
+
                 System.Runtime.Serialization.Json.DataContractJsonSerializer jsonSerializer = new System.Runtime.Serialization.Json.DataContractJsonSerializer(typeof(Dictionary<string, string>));
                 foreach (var tag in (Dictionary<string, string>)jsonSerializer.ReadObject(fs))
                     exifTags.Add(int.Parse(tag.Key, System.Globalization.NumberStyles.HexNumber), tag.Value);

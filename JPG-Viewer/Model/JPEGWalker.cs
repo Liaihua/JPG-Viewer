@@ -5,12 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-
+using JPG_Viewer.Model;
 namespace JPG_Viewer
 {
     class JPEGWalker
     {
-        public List<string> JPEGImagePaths;
+        public List<Model.AbstractFSObject> JPEGImagePaths;
         DirectoryInfo directoryInfo;
 
         public JPEGWalker(string path)
@@ -18,34 +18,59 @@ namespace JPG_Viewer
             JPEGImagePaths = ListJPEGAndDirsInDirectory(path);
         }
 
-        public List<string> ListJPEGAndDirsInDirectory(string dir)
+        public List<AbstractFSObject> ListJPEGAndDirsInDirectory(string dir)
         {
             directoryInfo = new DirectoryInfo(GetDirectoryPath(dir));
-            List<string> JPEGsAndFiles = FindAllPathsInDirectory(dir);
+            List<AbstractFSObject> JPEGsAndFiles = new List<AbstractFSObject>();
+            JPEGsAndFiles.AddRange(FindAllPathsInDirectory(dir));
             JPEGsAndFiles.AddRange(FindJPEGInDirectory(dir));
             return JPEGsAndFiles;
         }
 
-        public List<string> FindJPEGInDirectory(string dir)
+        public List<ImageModel> FindJPEGInDirectory(string dir)
         {
             if (string.IsNullOrWhiteSpace(dir))
                 return null;
-            List<string> JPEGPaths = new List<string>();
-            
+            List<ImageModel> JPEGPaths = new List<ImageModel>();
+
             try
             {
                 foreach (FileInfo file in directoryInfo.GetFiles("*", SearchOption.TopDirectoryOnly))
                 {
-                    if (file.Extension.Contains("jpg") ||
-                        file.Extension.Contains("jpeg"))
-                        JPEGPaths.Add(file.FullName);
+                    if (file.Extension.Contains("jpg") || file.Extension.Contains("JPG") ||
+                        file.Extension.Contains("jpeg") || file.Extension.Contains("JPEG"))
+                        JPEGPaths.Add(new ImageModel(file.FullName));
                 }
             }
             catch (Exception ex) { System.Windows.MessageBox.Show(ex.Message); }
             return JPEGPaths;
         }
 
-        public List<string> FindAllPathsInDirectory(string dir)
+        public List<ImageModel> SearchJPEGInsideDirectory(string dir, string pattern)
+        {
+            if (string.IsNullOrWhiteSpace(dir))
+                return null;
+            List<ImageModel> searchedJPEGs = new List<ImageModel>();
+            DirectoryInfo directory = new DirectoryInfo(dir);
+            foreach (FileInfo file in directory.GetFiles("*"))
+            {
+                if ((file.Extension.Contains("jpg") || file.Extension.Contains("JPG") ||
+                     file.Extension.Contains("jpeg") || file.Extension.Contains("JPEG")) &&
+                     file.Name.Contains(pattern))
+                    searchedJPEGs.Add(new ImageModel(file.FullName));
+            }
+            foreach (DirectoryInfo childDir in directory.GetDirectories())
+            {
+                try
+                {
+                    searchedJPEGs.AddRange(SearchJPEGInsideDirectory(childDir.FullName, pattern));
+                }
+                catch { }
+            }
+            return searchedJPEGs;
+        }
+
+        public List<DirectoryModel> FindAllPathsInDirectory(string dir)
         {
             if (string.IsNullOrWhiteSpace(dir))
                 return null;
@@ -56,22 +81,22 @@ namespace JPG_Viewer
                 }
                 catch (NullReferenceException)
                 { System.Windows.MessageBox.Show("Вы в корневой директории"); }
-            List<string> Dirs = new List<string>();
-            Dirs.Add("..");
+            List<DirectoryModel> Dirs = new List<DirectoryModel>();
+            Dirs.Add(new DirectoryModel { Name = ".." });
 
             try
             {
                 foreach (var d in directoryInfo.GetDirectories("*", SearchOption.TopDirectoryOnly))
                 {
                     //if (FindJPEGInDirectory(d.FullName).Count > 0)
-                    Dirs.Add(d.Name);
+                    Dirs.Add(new DirectoryModel { Name = d.Name });
                 }
             }
             catch (Exception ex) { System.Windows.MessageBox.Show(ex.Message); }
             return Dirs;
         }
 
-        public string GetCurrentDirectory() 
+        public string GetCurrentDirectory()
         {
             return directoryInfo.FullName;
         }
