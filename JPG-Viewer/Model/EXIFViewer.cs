@@ -49,8 +49,10 @@ namespace JPG_Viewer
                 case (int)IFDTypeEnum.Undefined:
 
                     if (count == 1)
+                    {
                         currentExifTag.TagValue = Encoding.ASCII.GetString(reader.ReadBytes(2));
-
+                        break;
+                    }
                     reader.BaseStream.Seek(
                     (count > 4) ? EndiannessIO.ReadUInt32(
                         BitConverter.ToUInt32(valueOrOffset, 0), false) + tiffHeader :

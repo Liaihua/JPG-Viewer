@@ -80,7 +80,7 @@
     </Compile>
     <Compile Include="Model\EndiannessIO.cs" />
     <Compile Include="Model\ExifTag.cs" />
-    <Compile Include="Model\JPEGWalker.cs" />
+    <Compile Include="Model\FileWalker.cs" />
     <Compile Include="Model\ImageMetadataEnums.cs" />
     <Compile Include="Model\EXIFViewer.cs" />
     <Compile Include="View\MainWindow.xaml.cs">
