@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 using JPG_Viewer.Model;
 namespace JPG_Viewer
 {
-    class JPEGWalker
+    class FileWalker
     {
         public List<Model.AbstractFSObject> JPEGImagePaths;
         DirectoryInfo directoryInfo;
 
-        public JPEGWalker(string path)
+        public FileWalker(string path)
         {
             JPEGImagePaths = ListJPEGAndDirsInDirectory(path);
         }

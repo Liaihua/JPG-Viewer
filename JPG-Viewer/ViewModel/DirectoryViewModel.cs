@@ -10,7 +10,7 @@ namespace JPG_Viewer
 {
     public class DirectoryViewModel : INotifyPropertyChanged
     {
-        JPEGWalker walker;
+        FileWalker walker;
         EXIFViewer viewer;
         private string currentDir;
 
@@ -22,7 +22,7 @@ namespace JPG_Viewer
 
         public DirectoryViewModel(string path)
         {
-            walker = new JPEGWalker(path);
+            walker = new FileWalker(path);
             viewer = new EXIFViewer();
             FoundImagesAndDirs = new ObservableCollection<Model.AbstractFSObject>(walker.JPEGImagePaths);
             CurrentDirectory = walker.GetCurrentDirectory();

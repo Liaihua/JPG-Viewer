@@ -12,7 +12,7 @@ namespace JPG_Viewer
     /// </summary>
     public partial class MainWindow : Window
     {
-        JPEGWalker walker;
+        FileWalker walker;
         EXIFViewer viewer;
         public string CurrentDirectory { get; set; }
         DirectoryViewModel directoryViewModel { get; set; }
@@ -24,7 +24,7 @@ namespace JPG_Viewer
             if (selectedFolderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 directoryViewModel = new DirectoryViewModel(selectedFolderDialog.SelectedPath);
-                walker = new JPEGWalker(selectedFolderDialog.SelectedPath);
+                walker = new FileWalker(selectedFolderDialog.SelectedPath);
                 viewer = new EXIFViewer();
                 InitializeComponent();
                 FoundImagesListView.DataContext = directoryViewModel;
