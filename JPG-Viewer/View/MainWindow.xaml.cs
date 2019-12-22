@@ -21,12 +21,16 @@ namespace JPG_Viewer
         public MainWindow()
         {
             FolderBrowserDialog selectedFolderDialog = new FolderBrowserDialog();
-            selectedFolderDialog.ShowDialog();
-            directoryViewModel = new DirectoryViewModel(selectedFolderDialog.SelectedPath);
-            walker = new JPEGWalker(selectedFolderDialog.SelectedPath);
-            viewer = new EXIFViewer();
-            InitializeComponent();
-            FoundImagesListView.DataContext = directoryViewModel;
+            if (selectedFolderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                directoryViewModel = new DirectoryViewModel(selectedFolderDialog.SelectedPath);
+                walker = new JPEGWalker(selectedFolderDialog.SelectedPath);
+                viewer = new EXIFViewer();
+                InitializeComponent();
+                FoundImagesListView.DataContext = directoryViewModel;
+            }
+            else
+                Close();
         }
 
         private void NewWindowMenuItem_Click(object sender, RoutedEventArgs e)

@@ -69,7 +69,6 @@
     <Compile Include="Model\AbstractFSObject.cs" />
     <Compile Include="ViewModel\CustomCommand.cs" />
     <Compile Include="ViewModel\DirectoryViewModel.cs" />
-    <Compile Include="ViewModel\FavoritesViewModel.cs" />
     <Compile Include="Model\FSObjectsModels.cs" />
     <Page Include="View\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
