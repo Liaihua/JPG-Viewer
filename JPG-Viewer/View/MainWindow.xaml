@@ -58,9 +58,10 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="24px"/>
                 <RowDefinition/>
+                <RowDefinition Height="24px"/>
             </Grid.RowDefinitions>
             <TextBox x:Name="SearchTextBox" TextChanged="SearchTextBox_TextChanged"/> <!-- Здесь будет поиск файлов внутри текущей папки (если что, можно присвоить другой ItemsSource) -->
-            <ListView x:Name="FoundImagesListView" VerticalAlignment="Stretch" Grid.Column="0" Grid.Row="2" MouseDoubleClick="FoundImagesListView_Changed" ItemsSource="{Binding FoundImagesAndDirs}" BorderThickness="1">
+            <ListView x:Name="FoundImagesListView" VerticalAlignment="Stretch" Grid.Column="0" Grid.Row="1" MouseDoubleClick="FoundImagesListView_Changed" ItemsSource="{Binding FoundImagesAndDirs}" BorderThickness="1">
                 <ListView.View>
                     <GridView>
                         <GridView.Columns>
@@ -109,6 +110,18 @@
                     </GridView>
                 </ListView.View>
             </ListView>
+            <Grid Grid.Column="0" Grid.Row="4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <ComboBox Name="SortCriterionsComboBox" Grid.Column="0">
+                    <TextBlock Tag="DeviceName" Text="Сортировать по устройству"/>
+                    <TextBlock Tag="WhenShot" Text="Сортировать по дате снимка"/>
+                    <TextBlock Tag="Size" Text="Сортировать по размеру"/>
+                </ComboBox>
+                <Button x:Name="SortImagesByCriterion" Content="Начать сортировку" Grid.Column="1" Click="SortImagesByCriterion_Click"/>
+            </Grid>
         </Grid>
         <!--
         <DataGrid x:Name="FoundImagesDataGrid" ItemsSource="{Binding FoundImages}" CanUserAddRows="False" CanUserDeleteRows="False" 

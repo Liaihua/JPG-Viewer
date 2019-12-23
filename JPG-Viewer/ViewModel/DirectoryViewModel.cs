@@ -13,7 +13,7 @@ namespace JPG_Viewer
         FileWalker walker;
         EXIFViewer viewer;
         private string currentDir;
-
+        //Здесь будет добавлено преобразование из словаря с отсортированными изображениями в 
         public ViewModel.CustomCommand<Model.DirectoryModel> UpdateDirectioryCommand;
         public ViewModel.CustomCommand<string> SearchImagesCommand;
         public ObservableCollection<Model.AbstractFSObject> FoundImagesAndDirs { get; set; }

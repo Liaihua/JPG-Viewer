@@ -14,7 +14,6 @@ namespace JPG_Viewer
     {
         FileWalker walker;
         EXIFViewer viewer;
-        public string CurrentDirectory { get; set; }
         DirectoryViewModel directoryViewModel { get; set; }
         GridViewColumnHeader sortedColumnHeader = null;
         ListSortDirection direction = ListSortDirection.Ascending;
@@ -93,6 +92,13 @@ namespace JPG_Viewer
             sortedColumnHeader = header;
             direction = currentDirection;
             FoundImagesListView.Items.SortDescriptions.Add(new SortDescription(header.Name, currentDirection));
+        }
+
+        private void SortImagesByCriterion_Click(object sender, RoutedEventArgs e)
+        {
+            if (SortCriterionsComboBox.SelectedItem == null)
+                return;
+            walker.SortImagesByCriterion(directoryViewModel.CurrentDirectory, (SortCriterionsComboBox.SelectedItem as TextBlock).Tag.ToString());
         }
     }
 }

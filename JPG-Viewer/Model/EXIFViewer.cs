@@ -58,7 +58,7 @@ namespace JPG_Viewer
                     SeekOrigin.Begin
                     );
                     currentExifTag.TagValue = Encoding.ASCII.GetString(
-                        reader.ReadBytes((int)count)
+                        reader.ReadBytes((int)count - 1)
                         );
                     break;
 
@@ -71,7 +71,7 @@ namespace JPG_Viewer
                         SeekOrigin.Begin
                         );
                     currentExifTag.TagValue = Encoding.ASCII.GetString(
-                        reader.ReadBytes((int)count)
+                        reader.ReadBytes((int)count - 1)
                         );
                     break;
 
