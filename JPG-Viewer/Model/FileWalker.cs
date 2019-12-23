@@ -167,7 +167,7 @@ namespace JPG_Viewer
                 case "WhenShot":
                     foreach (var image in images)
                     {
-                        string key = (image.WhenShot.Length != 0) ? image.WhenShot.Substring(0, 10) : "";
+                        string key = (image.WhenShot.Length != 0) ? image.WhenShot.Substring(0, 10).Replace(':','_') : "";
                         if (!searchedImagesByCriterion.ContainsKey(key))
                             searchedImagesByCriterion.Add(key, new List<ImageModel>());
 
