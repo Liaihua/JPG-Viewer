@@ -54,7 +54,7 @@ namespace JPG_Viewer
             DirectoryInfo directory = new DirectoryInfo(dir);
             foreach (FileInfo file in directory.GetFiles("*"))
             {
-                if ((file.Extension.Contains("jpg") || file.Extension.Contains("JPG") ||
+                if ((file.Extension.Contains("jpg")  || file.Extension.Contains("JPG") ||
                      file.Extension.Contains("jpeg") || file.Extension.Contains("JPEG")) &&
                      file.Name.Contains(pattern))
                     searchedJPEGs.Add(new ImageModel(file.FullName));
@@ -133,21 +133,28 @@ namespace JPG_Viewer
         // диапазонов, выраженных в виде степеней двойки. Если в какой-то диапазон не входит ни одна
         // фотография (в 1 КБ, к примеру), то мы его сразу отсекаем
         //
-        // 5. Формируется представление полученного списка в виде директорий и вложенных в них файлов
-        // (но на самом деле они еще не созданы)
-        // 6. Если пользователь решит сохранить изображения в таком формате, то ему предлагается выбрать
+        // 
+        // 5. Пользователю предлагается выбрать
         // нужную папку, где он будет сохранять результаты. В другом случае мы просто сбрасываем все результаты
-        // поиска
-        // 7. В выбранной папке сохраняются все результаты поиска
+        // поиска.
+        // Также пользователь может выбрать, копировать ли изображения, или перемещать их.
+        // 6. В выбранной папке сохраняются все результаты поиска
         //
 
-        public void SortImagesByCriterion(string path, string criterion)
+        public void GenerateSortedImages(bool duplicate)
+        {
+
+        }
+
+        public Dictionary<string, List<ImageModel>> SortImagesByCriterion(string path, string criterion)
         {
             List<ImageModel> SearchedImages = SearchJPEGInsideDirectory(path);
             if (SearchedImages.Count == 0)
-                return;
-            Dictionary<string, List<ImageModel>> searchedImagesByCriterion = SortImagesByStringValue(criterion, ref SearchedImages);
+                return null;
+            Dictionary<string, List<ImageModel>> searchedImagesByCriterion =
+            SortImagesByStringValue(criterion, ref SearchedImages);
             
+            return searchedImagesByCriterion;
         }
 
         private Dictionary<string, List<ImageModel>> SortImagesByStringValue(string criterion, ref List<ImageModel> images)
@@ -174,15 +181,17 @@ namespace JPG_Viewer
                         searchedImagesByCriterion[key].Add(image);
                     }
                     break;
+                case "Size":
+                    foreach(var image in images)
+                    {
+                        if (!searchedImagesByCriterion.ContainsKey(image.ImageResolution))
+                            searchedImagesByCriterion.Add(image.ImageResolution, new List<ImageModel>());
+
+                        searchedImagesByCriterion[image.ImageResolution].Add(image);
+                    }
+                    break;
             }
             return searchedImagesByCriterion;
-        }
-
-        private Dictionary<string, List<ImageModel>> SortImagesBySize(ref List<ImageModel> images)
-        {
-            long maxImageSizeInDir = images.Max((im) => im.Size);
-            //maxImageSizeInDir = Math.Pow(2, CalculateExpOfTwo(maxImageSizeInDir));
-            return null;
         }
 
         public string GetCurrentDirectory()
@@ -201,17 +210,6 @@ namespace JPG_Viewer
                 return dir;
             else
                 return $"{directoryInfo.FullName}\\{dir}";
-        }
-
-        private double CalculateExpOfTwo(long param)
-        {
-            int count = 0;
-            while(param != 0)
-            {
-                param >>= 1;
-                count++;
-            }
-            return count;
         }
     }
 }

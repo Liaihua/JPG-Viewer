@@ -14,7 +14,7 @@ namespace JPG_Viewer
     {
         FileWalker walker;
         EXIFViewer viewer;
-        DirectoryViewModel directoryViewModel { get; set; }
+        DirectoryViewModel DirectoryViewModel { get; set; }
         GridViewColumnHeader sortedColumnHeader = null;
         ListSortDirection direction = ListSortDirection.Ascending;
         public MainWindow()
@@ -22,14 +22,15 @@ namespace JPG_Viewer
             FolderBrowserDialog selectedFolderDialog = new FolderBrowserDialog();
             if (selectedFolderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                directoryViewModel = new DirectoryViewModel(selectedFolderDialog.SelectedPath);
+                DirectoryViewModel = new DirectoryViewModel(selectedFolderDialog.SelectedPath);
                 walker = new FileWalker(selectedFolderDialog.SelectedPath);
                 viewer = new EXIFViewer();
                 InitializeComponent();
-                FoundImagesListView.DataContext = directoryViewModel;
+                FoundImagesListView.DataContext = DirectoryViewModel;
             }
             else
                 Close();
+            selectedFolderDialog.Dispose();
         }
 
         private void NewWindowMenuItem_Click(object sender, RoutedEventArgs e)
@@ -50,7 +51,7 @@ namespace JPG_Viewer
                 }
                 else
                 {
-                    directoryViewModel.UpdateDirectioryCommand.Execute(FoundImagesListView.SelectedItem);
+                    DirectoryViewModel.UpdateDirectioryCommand.Execute(FoundImagesListView.SelectedItem);
 
                 }
             }
@@ -70,14 +71,14 @@ namespace JPG_Viewer
             {
                 if (string.IsNullOrWhiteSpace(SearchTextBox.Text))
                 {
-                    FoundImagesListView.ItemsSource = directoryViewModel.FoundImagesAndDirs;
+                    FoundImagesListView.ItemsSource = DirectoryViewModel.FoundImagesAndDirs;
                     return;
                 }
-                directoryViewModel.SearchImagesCommand.Execute(SearchTextBox.Text);
-                if (directoryViewModel.SearchedImages.Count > 0)
-                    FoundImagesListView.ItemsSource = directoryViewModel.SearchedImages;
+                DirectoryViewModel.SearchImagesCommand.Execute(SearchTextBox.Text);
+                if (DirectoryViewModel.SearchedImages.Count > 0)
+                    FoundImagesListView.ItemsSource = DirectoryViewModel.SearchedImages;
                 else
-                    FoundImagesListView.ItemsSource = directoryViewModel.FoundImagesAndDirs;
+                    FoundImagesListView.ItemsSource = DirectoryViewModel.FoundImagesAndDirs;
             }
         }
 
@@ -98,7 +99,9 @@ namespace JPG_Viewer
         {
             if (SortCriterionsComboBox.SelectedItem == null)
                 return;
-            walker.SortImagesByCriterion(directoryViewModel.CurrentDirectory, (SortCriterionsComboBox.SelectedItem as TextBlock).Tag.ToString());
+            bool duplicate = bool.Parse((sender as System.Windows.Controls.Button).Tag.ToString());
+            //DirectoryViewModel.
+            DirectoryViewModel.SortImagesCommand.Execute((SortCriterionsComboBox.SelectedItem as TextBlock).Tag.ToString());
         }
     }
 }

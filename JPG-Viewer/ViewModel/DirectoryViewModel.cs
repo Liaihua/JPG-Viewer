@@ -11,11 +11,11 @@ namespace JPG_Viewer
     public class DirectoryViewModel : INotifyPropertyChanged
     {
         FileWalker walker;
-        EXIFViewer viewer;
         private string currentDir;
         //Здесь будет добавлено преобразование из словаря с отсортированными изображениями в 
         public ViewModel.CustomCommand<Model.DirectoryModel> UpdateDirectioryCommand;
         public ViewModel.CustomCommand<string> SearchImagesCommand;
+        public ViewModel.CustomCommand<string> SortImagesCommand;
         public ObservableCollection<Model.AbstractFSObject> FoundImagesAndDirs { get; set; }
         public ObservableCollection<Model.ImageModel> SearchedImages { get; set; }
         public string CurrentDirectory { get { return currentDir; } set { currentDir = value; OnPropertyChanged(nameof(CurrentDirectory)); } }
@@ -23,7 +23,6 @@ namespace JPG_Viewer
         public DirectoryViewModel(string path)
         {
             walker = new FileWalker(path);
-            viewer = new EXIFViewer();
             FoundImagesAndDirs = new ObservableCollection<Model.AbstractFSObject>(walker.JPEGImagePaths);
             CurrentDirectory = walker.GetCurrentDirectory();
             SearchedImages = new ObservableCollection<Model.ImageModel>();
@@ -38,6 +37,10 @@ namespace JPG_Viewer
             {
                 SearchedImages.Clear();
                 SearchedImages = new ObservableCollection<Model.ImageModel>(walker.SearchJPEGInsideDirectory(CurrentDirectory, param));
+            });
+            SortImagesCommand = new ViewModel.CustomCommand<string>((criterion) =>
+            {
+                walker.SortImagesByCriterion(CurrentDirectory, criterion);
             });
         }
 

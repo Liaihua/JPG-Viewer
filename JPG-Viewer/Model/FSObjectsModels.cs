@@ -12,6 +12,7 @@ namespace JPG_Viewer.Model
         public long Size { get; }
         public string WhenShot { get; }
         public string DeviceName { get; }
+        public string ImageResolution { get; }
         //public string Artist { get; }
         public ImageModel(string pathname)
         {
@@ -21,11 +22,16 @@ namespace JPG_Viewer.Model
             try
             {
                 List<ExifTag> availableTags = new EXIFViewer().ReadExifInFile(pathname);
-                WhenShot = availableTags.First(tag => tag.TagDescription == "DateTime").TagValue;
-                DeviceName = availableTags.First(tag => tag.TagDescription == "Model").TagValue;
+                WhenShot = availableTags?.Find(tag => tag.TagDescription.Contains("DateTime"))?.TagValue;
+                DeviceName = availableTags?.Find(tag => tag.TagDescription == "Model")?.TagValue;
+                ImageResolution = $"{availableTags?.Find(tag => tag.TagDescription == "XResolution")?.TagValue}" +
+                                 $"x{availableTags?.Find(tag => tag.TagDescription == "YResolution")?.TagValue}";
                 //Artist = availableTags.First(tag => tag.TagDescription == "Artist").TagValue;
+                WhenShot ??= "";
+                DeviceName ??= "";
+                ImageResolution ??= "";
             }
-            catch { WhenShot = ""; DeviceName = ""; }
+            catch { WhenShot = ""; DeviceName = ""; ImageResolution = ""; }
         }
     }
 

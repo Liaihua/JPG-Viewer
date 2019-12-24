@@ -60,7 +60,7 @@ namespace JPG_Viewer
                     SeekOrigin.Begin
                     );
                     currentExifTag.TagValue = Encoding.ASCII.GetString(
-                        reader.ReadBytes((int)count - 1)
+                        reader.ReadBytes((count != 0) ? (int)count - 1 : 0)
                         );
                     break;
 
@@ -73,7 +73,7 @@ namespace JPG_Viewer
                         SeekOrigin.Begin
                         );
                     currentExifTag.TagValue = Encoding.ASCII.GetString(
-                        reader.ReadBytes((int)count - 1)
+                        reader.ReadBytes((count != 0) ? (int)count - 1 : 0)
                         );
                     break;
 
@@ -219,7 +219,7 @@ namespace JPG_Viewer
             // У нас есть вариант, позволяющий не просматривать каждые два байта, а "прыгать" по основным тегам,
             // что по идее позволит тратить меньше времени на чтение файла
 
-            List<ExifTag> kindaExif = null;
+            List<ExifTag> kindaExif = new List<ExifTag>();
 
             using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read))
             {
