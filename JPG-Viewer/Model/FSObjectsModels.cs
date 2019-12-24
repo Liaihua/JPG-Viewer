@@ -23,7 +23,7 @@ namespace JPG_Viewer.Model
             {
                 List<ExifTag> availableTags = new EXIFViewer().ReadExifInFile(pathname);
                 WhenShot = availableTags?.Find(tag => tag.TagDescription.Contains("DateTime"))?.TagValue;
-                DeviceName = availableTags?.Find(tag => tag.TagDescription == "Model")?.TagValue;
+                DeviceName = availableTags?.Find(tag => tag.TagDescription == "Model")?.TagValue.Trim('\0');
                 ImageResolution = $"{availableTags?.Find(tag => tag.TagDescription == "PixelXDimension")?.TagValue}" +
                                  $"x{availableTags?.Find(tag => tag.TagDescription == "PixelYDimension")?.TagValue}";
                 //Artist = availableTags.First(tag => tag.TagDescription == "Artist").TagValue;

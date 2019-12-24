@@ -16,15 +16,17 @@ namespace JPG_Viewer
         public ViewModel.CustomCommand<Model.DirectoryModel> UpdateDirectioryCommand;
         public ViewModel.CustomCommand<string> SearchImagesCommand;
         public ViewModel.CustomCommand<string> SortImagesCommand;
+        public ViewModel.CustomCommand<string> SetFilesDuplication;
         public ObservableCollection<Model.AbstractFSObject> FoundImagesAndDirs { get; set; }
         public ObservableCollection<Model.ImageModel> SearchedImages { get; set; }
         public string CurrentDirectory { get { return currentDir; } set { currentDir = value; OnPropertyChanged(nameof(CurrentDirectory)); } }
-
+        public bool DuplicateSortedImages { get; set; }
         public DirectoryViewModel(string path)
         {
             walker = new FileWalker(path);
             FoundImagesAndDirs = new ObservableCollection<Model.AbstractFSObject>(walker.JPEGImagePaths);
             CurrentDirectory = walker.GetCurrentDirectory();
+            DuplicateSortedImages = false;
             SearchedImages = new ObservableCollection<Model.ImageModel>();
             UpdateDirectioryCommand = new ViewModel.CustomCommand<Model.DirectoryModel>((dir) =>
             {
@@ -40,7 +42,14 @@ namespace JPG_Viewer
             });
             SortImagesCommand = new ViewModel.CustomCommand<string>((criterion) =>
             {
-                walker.SortImagesByCriterion(CurrentDirectory, criterion);
+                System.Windows.Forms.FolderBrowserDialog folderDialog = new System.Windows.Forms.FolderBrowserDialog();
+                if(folderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                    walker.GenerateSortedImages(CurrentDirectory, folderDialog.SelectedPath, criterion, DuplicateSortedImages);
+                CurrentDirectory = folderDialog.SelectedPath;
+            });
+            SetFilesDuplication = new ViewModel.CustomCommand<string>((duplicate) =>
+            {
+                DuplicateSortedImages = bool.Parse(duplicate);
             });
         }
 

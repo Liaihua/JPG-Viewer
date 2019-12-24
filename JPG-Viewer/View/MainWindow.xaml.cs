@@ -99,8 +99,7 @@ namespace JPG_Viewer
         {
             if (SortCriterionsComboBox.SelectedItem == null)
                 return;
-            bool duplicate = bool.Parse((sender as System.Windows.Controls.Button).Tag.ToString());
-            //DirectoryViewModel.
+            DirectoryViewModel.DuplicateSortedImages = bool.Parse((sender as System.Windows.Controls.Button).Tag.ToString());
             DirectoryViewModel.SortImagesCommand.Execute((SortCriterionsComboBox.SelectedItem as TextBlock).Tag.ToString());
         }
     }

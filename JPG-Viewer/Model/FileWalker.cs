@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using JPG_Viewer.Model;
 namespace JPG_Viewer
 {
@@ -54,7 +55,7 @@ namespace JPG_Viewer
             DirectoryInfo directory = new DirectoryInfo(dir);
             foreach (FileInfo file in directory.GetFiles("*"))
             {
-                if ((file.Extension.Contains("jpg")  || file.Extension.Contains("JPG") ||
+                if ((file.Extension.Contains("jpg") || file.Extension.Contains("JPG") ||
                      file.Extension.Contains("jpeg") || file.Extension.Contains("JPEG")) &&
                      file.Name.Contains(pattern))
                     searchedJPEGs.Add(new ImageModel(file.FullName));
@@ -141,9 +142,29 @@ namespace JPG_Viewer
         // 6. В выбранной папке сохраняются все результаты поиска
         //
 
-        public void GenerateSortedImages(bool duplicate)
+        public void GenerateSortedImages(string sourcePath, string destinationPath, string criterion, bool duplicate)
         {
+            Dictionary<string, List<ImageModel>> sortedImages = SortImagesByCriterion(sourcePath, criterion);
 
+            foreach (var keyValues in sortedImages)
+            {
+                DirectoryInfo sortedImagesDirectoryInfo;
+                if (keyValues.Key == "")
+                    sortedImagesDirectoryInfo = Directory.CreateDirectory(destinationPath + "\\Empty");
+                else
+                    sortedImagesDirectoryInfo = Directory.CreateDirectory(destinationPath + "\\" + keyValues.Key);
+                foreach (ImageModel image in keyValues.Value)
+                {
+                    if (duplicate)
+                    {
+                        File.Copy(image.Name, sortedImagesDirectoryInfo.FullName + "\\" + new FileInfo(image.Name).Name);
+                    }
+                    else
+                    {
+                        File.Move(image.Name, sortedImagesDirectoryInfo.FullName + "\\" + new FileInfo(image.Name).Name);
+                    }
+                }
+            }
         }
 
         public Dictionary<string, List<ImageModel>> SortImagesByCriterion(string path, string criterion)
@@ -153,45 +174,45 @@ namespace JPG_Viewer
                 return null;
             Dictionary<string, List<ImageModel>> searchedImagesByCriterion =
             SortImagesByStringValue(criterion, ref SearchedImages);
-            
+
             return searchedImagesByCriterion;
         }
 
         private Dictionary<string, List<ImageModel>> SortImagesByStringValue(string criterion, ref List<ImageModel> images)
         {
-            Dictionary<string, List<ImageModel>> searchedImagesByCriterion = new Dictionary<string, List<ImageModel>>();
+            Dictionary<string, List<ImageModel>> sortedImagesByCriterion = new Dictionary<string, List<ImageModel>>();
             switch (criterion)
             {
                 case "DeviceName":
                     foreach (var image in images)
                     {
-                        if (!searchedImagesByCriterion.ContainsKey(image.DeviceName))
-                            searchedImagesByCriterion.Add(image.DeviceName, new List<ImageModel>());
+                        if (!sortedImagesByCriterion.ContainsKey(image.DeviceName))
+                            sortedImagesByCriterion.Add(image.DeviceName, new List<ImageModel>());
 
-                        searchedImagesByCriterion[image.DeviceName].Add(image);
+                        sortedImagesByCriterion[image.DeviceName].Add(image);
                     }
                     break;
                 case "WhenShot":
                     foreach (var image in images)
                     {
-                        string key = (image.WhenShot.Length != 0) ? image.WhenShot.Substring(0, 10).Replace(':','_') : "";
-                        if (!searchedImagesByCriterion.ContainsKey(key))
-                            searchedImagesByCriterion.Add(key, new List<ImageModel>());
+                        string key = (image.WhenShot.Length != 0) ? image.WhenShot.Substring(0, 10).Replace(':', '_') : "";
+                        if (!sortedImagesByCriterion.ContainsKey(key))
+                            sortedImagesByCriterion.Add(key, new List<ImageModel>());
 
-                        searchedImagesByCriterion[key].Add(image);
+                        sortedImagesByCriterion[key].Add(image);
                     }
                     break;
                 case "Size":
-                    foreach(var image in images)
+                    foreach (var image in images)
                     {
-                        if (!searchedImagesByCriterion.ContainsKey(image.ImageResolution))
-                            searchedImagesByCriterion.Add(image.ImageResolution, new List<ImageModel>());
+                        if (!sortedImagesByCriterion.ContainsKey(image.ImageResolution))
+                            sortedImagesByCriterion.Add(image.ImageResolution, new List<ImageModel>());
 
-                        searchedImagesByCriterion[image.ImageResolution].Add(image);
+                        sortedImagesByCriterion[image.ImageResolution].Add(image);
                     }
                     break;
             }
-            return searchedImagesByCriterion;
+            return sortedImagesByCriterion;
         }
 
         public string GetCurrentDirectory()

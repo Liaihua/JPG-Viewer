@@ -121,8 +121,8 @@
                     <TextBlock Tag="WhenShot" Text="Сортировать по дате снимка"/>
                     <TextBlock Tag="Size" Text="Сортировать по размеру"/>
                 </ComboBox>
-                <Button x:Name="SortImagesWithMoving" Tag="false" Content="Переместить" Grid.Column="1" Click="SortImagesByCriterion_Click"/>
-                <Button x:Name="SortImagesWithoutMoving" Tag="true" Content="Копировать" Grid.Column="2" Click="SortImagesByCriterion_Click"/>
+                <Button x:Name="SortImagesWithMoving" Tag="false" Content="Переместить" Command="{Binding SetFilesDuplicaion}" Grid.Column="1" Click="SortImagesByCriterion_Click"/>
+                <Button x:Name="SortImagesWithoutMoving" Tag="true" Content="Копировать" Command="{Binding SetFilesDuplicaion}" Grid.Column="2" Click="SortImagesByCriterion_Click"/>
             </Grid>
         </Grid>
         <!--
